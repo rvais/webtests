@@ -7,7 +7,7 @@ dist: trusty
 sudo: required
 
 addons:
-  chrome: stable  # get stable version of chrome
+  firefox: "54.0"
 
 language: python
 python:
@@ -17,13 +17,13 @@ python:
 #  - 
 
 install:
-  # get chrome webdriver
-  - wget -N http://chromedriver.storage.googleapis.com/2.30/chromedriver_linux64.zip -P ~/
-  - unzip ~/chromedriver_linux64.zip -d ~/
-  - rm ~/chromedriver_linux64.zip
-  - sudo mv -f ~/chromedriver /usr/local/share/
-  - sudo chmod +x /usr/local/share/chromedriver
-  - sudo ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
+  # get gecko webdriver
+  - wget -N https://github.com/mozilla/geckodriver/releases/download/v0.18.0/geckodriver-v0.18.0-linux32.tar.gz -P ~/
+  - tar xvzf ~/geckodriver-v0.18.0-linux32.tar.gz -C ~/
+  - rm ~/geckodriver-v0.18.0-linux32.tar.gz
+  - sudo mv -f ~/geckodriver /usr/local/share/
+  - sudo chmod +x /usr/local/share/geckodriver
+  - sudo ln -s /usr/local/share/geckodriver /usr/local/bin/geckodriver
 
   # instal necessary modules for python
   - pip install -Ur requirements.txt
@@ -34,10 +34,11 @@ before_script:
   - sh -e /etc/init.d/xvfb start
 
   # setup browser settings for webtests
-  - echo $(which google-chrome)
-  - echo $(which chromedriver)
-  - export BROWSER_BIN_PATH=`readlink -f $(which google-chrome)`
-  - export DRIVER_BIN_PATH=`readlink -f $(which chromedriver)`
+
+  - echo $(which firefox)
+  - echo $(which geckodriver)
+  - export BROWSER_BIN_PATH=`readlink -f $(which firefox)`
+  - export DRIVER_BIN_PATH=`readlink -f $(which geckodriver)`
   - export PYTHONPATH="${PWD%/}${PYTHONPATH:+:}${PYTHONPATH:-}"
 
 script:

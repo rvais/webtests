@@ -128,9 +128,9 @@ class WebAgent(object):
         if browser == WebAgent.BROWSER_CHROME:
             self._browser = Chrome()
 
-#        if browser == WebAgent.BROWSER_FIREFOX:
-#            self._browser = Firefox()
-        
+        if browser == WebAgent.BROWSER_FIREFOX:
+            self._browser = Firefox()
+
         self._logger.debug("'{}' has been selected as browser.".format(browser))
 
         browser_path = self._browser_path
