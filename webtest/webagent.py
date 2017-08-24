@@ -69,15 +69,17 @@ class WebAgent(object):
 
         # logging level for whole logger
         # can chnge log level in a subsequent call
-        if (level == None):
-            logger.setLevel(DEFAULT_LOG_LEVEL)
+        logger.setLevel(DEFAULT_LOG_LEVEL)
+
+        if (level != None):
+            logger.setLevel(level)
 
         if (not logger.hasHandlers()):
             # handler for stderr
             handler = logging.StreamHandler()
             formatter = logging.Formatter('[%(levelname)s]: %(message)s')
             handler.setFormatter(formatter)
-            handler.setLevel(logging.ERROR) # only erros are needed
+            # handler.setLevel(logging.ERROR) # only erros are needed
             logger.addHandler(handler)
 
             # handler for logging to file
@@ -94,24 +96,24 @@ class WebAgent(object):
         if browser == WebAgent.BROWSER_CHROME:
             self._browser = Chrome()
         
-        self._logger.debug("'{}' has been selected as browser.", browser)
+        self._logger.debug("'{}' has been selected as browser.".format(browser))
 
         envvar = "BROWSER_BIN_PATH"
         if envvar in os.environ:
-            self._logger.debug("Environment variable '{}' has been set.", envvar)
-            self._logger.debug("Path '{}' has been set as binary for '{}' browser.",
-                os.environ[envvar], browser)
+            self._logger.debug("Environment variable '{}' has been set.".format(envvar))
+            self._logger.debug("Path '{}' has been set as binary for '{}' browser."
+                .format(os.environ[envvar], browser))
             self._browser.set_new_browser_path(os.environ[envvar])
 
         envvar = "DRIVER_BIN_PATH"
         if envvar in os.environ:
-            self._logger.debug("Environment variable '{}' has been set.", envvar)
+            self._logger.debug("Environment variable '{}' has been set.".format(envvar))
             self._logger.debug("Path '{}' has been set as binary"
-                " for selenium webdriver.", os.environ[envvar])
+                " for selenium webdriver.".format(os.environ[envvar]))
             self._browser.set_new_webdriver_path(os.environ[envvar])
 
 
-        self._logger.debug("Launching webdriver for '{}' browser.", browser)
+        self._logger.debug("Launching webdriver for '{}' browser.".format(browser))
         self._browser.start_webdriver()
 
     def go_to_page(self,
@@ -140,7 +142,7 @@ class WebAgent(object):
         else:
             url = url_format.format(self._protocol, self._host, self._port, self._url)
 
-        self._logger.debug("Connecting to '{}'.", url)
+        self._logger.debug("Connecting to '{}'.".format(url))
         self._browser.driver.get(url)
 
     def close_browser(self):
