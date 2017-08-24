@@ -23,9 +23,17 @@ install:
   # instal necessary modules for python
   - pip install -Ur requirements.txt
 
-before_script:
-  - export BROWSER_BIN_PATH=$(whereis chrome)
-  - export DRIVER_BIN_PATH=$(whereis chromedriver)
+before_script: 
+  # fake display for browser
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+
+  # setup browser settings for webtests
+  - echo $(which google-chrome)
+  - echo $(which chromedriver)
+  - export BROWSER_BIN_PATH=`readlink $(which google-chrome)`
+  - export DRIVER_BIN_PATH=`readlink $(which chromedriver)`
+  - export PYTHONPATH="${PWD%/}${PYTHONPATH:+:}${PYTHONPATH:-}"
 
 script:
   -  python webtest/webagent.py
