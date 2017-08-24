@@ -19,10 +19,14 @@ class Browser(object):
     @property
     def driver(self):
         return self._driver
+
+    @property
+    def path_to_driver(self):
+        return self._driver_path
     
     @property
     def path_to_browser(self):
-        return self._path
+        return self._browser_path
 
     def set_cmd_arguments(self, args: list):
         self._args = args

@@ -16,14 +16,6 @@ class Chrome(Browser):
         self._driver_path = 'chromedriver'
         self._browser_path = '/home/rvais/bin/chrome'
 
-    @property
-    def driver(self):
-        return self._driver
-
-    @property
-    def path_to_browser(self):
-        return self._path
-
     def start_webdriver(self):
         # get default options that webdriver uses
         options = webdriver.ChromeOptions()

@@ -47,6 +47,9 @@ class WebAgent(object):
     BROWSER_CHROME = "chrome"
     BROWSER_FIREFOX = "firefox"
 
+    BROWSER_PATH = None
+    DRIVER_PATH = None
+
     def __init__(self):
         class_name = str(self.__class__.__name__)
         self._logger = self.__get_logger(class_name, DEFAULT_LOG_LEVEL)
@@ -90,6 +93,23 @@ class WebAgent(object):
     def start_up_browser(self, browser: str =BROWSER_CHROME):
         if browser == WebAgent.BROWSER_CHROME:
             self._browser = Chrome()
+        
+        self._logger.debug("'{}' has been selected as browser.", browser)
+
+        envvar = "BROWSER_BIN_PATH"
+        if envvar in os.environ:
+            self._logger.debug("Environment variable '{}' has been set.", envvar)
+            self._logger.debug("Path '{}' has been set as binary for '{}' browser.",
+                os.environ[envvar], browser)
+            self._browser.set_new_browser_path(os.environ[envvar])
+
+        envvar = "DRIVER_BIN_PATH"
+        if envvar in os.environ:
+            self._logger.debug("Environment variable '{}' has been set.", envvar)
+            self._logger.debug("Path '{}' has been set as binary"
+                " for selenium webdriver.", os.environ[envvar])
+            self._browser.set_new_webdriver_path(os.environ[envvar])
+
 
         self._logger.debug("Launching webdriver for '{}' browser.", browser)
         self._browser.start_webdriver()
@@ -135,7 +155,7 @@ def main():
     agent.start_up_browser()
     agent.go_to_page('www.google.cz')
 
-    time.sleep(20)
+    time.sleep(5)
 
     agent.close_browser()
 
