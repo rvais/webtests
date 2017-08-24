@@ -1,10 +1,32 @@
+dist: trusty
+sudo: required
+
+addons:
+  chrome: stable  # get stable version of chrome
+
 language: python
 python:
-  - "3.2"
-  - "3.3"
-  - "3.4"
-  - "3.5"
   - "3.6"
 
-install: true
-script: false
+# before_install:
+#  - 
+
+install:
+  # get chrome webdriver
+  - wget -N http://chromedriver.storage.googleapis.com/2.30/chromedriver_linux64.zip -P ~/
+  - unzip ~/chromedriver_linux64.zip -d ~/
+  - rm ~/chromedriver_linux64.zip
+  - sudo mv -f ~/chromedriver /usr/local/share/
+  - sudo chmod +x /usr/local/share/chromedriver
+  - sudo ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
+
+  # instal necessary modules for python
+  - pip install -Ur requirements.txt
+
+before_script:
+  - export BROWSER_BIN_PATH=$(whereis chrome)
+  - export DRIVER_BIN_PATH=$(whereis chromedriver)
+
+script:
+  -  python webtest/webagent.py
+ 
