@@ -1,3 +1,8 @@
+# Framewor for testing web aplications - proof of concept
+# Authors:  Roman Vais <rvais@redhat.com>
+#
+# This is configuration file for Travis CI
+
 dist: trusty
 sudo: required
 
@@ -31,8 +36,8 @@ before_script:
   # setup browser settings for webtests
   - echo $(which google-chrome)
   - echo $(which chromedriver)
-  - export BROWSER_BIN_PATH=`readlink $(which google-chrome)`
-  - export DRIVER_BIN_PATH=`readlink $(which chromedriver)`
+  - export BROWSER_BIN_PATH=`readlink -f $(which google-chrome)`
+  - export DRIVER_BIN_PATH=`readlink -f $(which chromedriver)`
   - export PYTHONPATH="${PWD%/}${PYTHONPATH:+:}${PYTHONPATH:-}"
 
 script:
