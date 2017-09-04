@@ -19,31 +19,32 @@ import pudb  # debuger
 import time
 # from unittest.mock import Mock
 
+from webtest.browsers.browser import Browser
 from webtest.browsers.chrome import Chrome
+from webtest.common.logger import get_logger
+from webtest.common.http import Constants as HTTP_CONST
+from webtest.components.models.google.google import GoogleMainPage
+from webtest.components.pagemodel import model
+from webtest.components.pagemodel.model import PageModel
+from webtest.components.pagemodel.page import Page
 
-import pytest
-from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException, WebDriverException
-from typing import Type, List
+# import pytest
+# from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException, WebDriverException
+# from typing import Type, List
 
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By
+# from selenium.webdriver.remote.webelement import WebElement
+# from selenium.webdriver.support.ui import WebDriverWait
+# from selenium.webdriver.support import expected_conditions as EC
 
-# definiton of var & const_____________________________________________
+# definition of var & const_____________________________________________
 
-DEFAULT_LOG_LEVEL = logging.DEBUG  # CRITICAL | ERROR | WARNING | INFO | NOTSET
-
-
-# definiton of functions_______________________________________________
+# definition of functions_______________________________________________
 
 # Class definition ____________________________________________________
 
 class WebAgent(object):
-    PROTOCOL_HTTP = "http"
-    PROTOCOL_HTTPS = "https"
-
     BROWSER_CHROME = "chrome"
     BROWSER_FIREFOX = "firefox"
 
@@ -52,45 +53,14 @@ class WebAgent(object):
 
     def __init__(self):
         class_name = str(self.__class__.__name__)
-        self._logger = self.__get_logger(class_name, DEFAULT_LOG_LEVEL)
+        self._logger = get_logger(class_name)
 
         self._host = None
         self._port = None
         self._url = None
         self._protocol = None
         self._browser = None
-
-    def __get_logger(self, name="logger", level=None, sfx=None):
-        if (sfx is not None):
-            name = "{}{}".format(name, sfx)
-
-        logger = logging.getLogger(name)
-        logname = "{}.log".format(name)
-
-        # logging level for whole logger
-        # can chnge log level in a subsequent call
-        logger.setLevel(DEFAULT_LOG_LEVEL)
-
-        if (level != None):
-            logger.setLevel(level)
-
-        if (not logger.hasHandlers()):
-            # handler for stderr
-            handler = logging.StreamHandler()
-            formatter = logging.Formatter('[%(levelname)s]: %(message)s')
-            handler.setFormatter(formatter)
-            # handler.setLevel(logging.ERROR) # only erros are needed
-            logger.addHandler(handler)
-
-            # handler for logging to file
-            handler = logging.FileHandler(logname)
-            formatter = logging.Formatter('%(asctime)s|[%(levelname)s]'
-                                          ' %(name)s: %(message)s')
-            handler.setFormatter(formatter)
-            # logs everithing that goes to the logger
-            logger.addHandler(handler)
-
-        return logger
+        self._page = None
 
     def start_up_browser(self, browser: str =BROWSER_CHROME):
         if browser == WebAgent.BROWSER_CHROME:
@@ -120,45 +90,46 @@ class WebAgent(object):
             host: str,
             port: int = 0, # 8161,
             url: str = "/",
-            protocol: str =PROTOCOL_HTTP):
+            protocol: str =HTTP_CONST.PROTOCOL_HTTP):
 
-        """
+        self._logger.debug("Creating new page model without any components.")
+        model = PageModel(protocol=protocol, host=host, port=port, url=url)
 
-        :type port: int
-        """
-        self._host = host
-        self._port = port
-        self._url = url
-        self._protocol = protocol
+        self._logger.debug("Connecting to '{}' via this address.".format(model.url))
+        return self.get_page(model=model)
 
-        url_format = '{}://{}:{}/{}'
-
-        if len(self._url) > 0 and self._url[0] == '/':
-            self._url = self._url[1:]
-
-        if port <= 0:
-            url_format = '{}://{}/{}'
-            url = url_format.format(self._protocol, self._host, self._url)
+    def get_page(self, model: PageModel=None, full_url: str=None):
+        if model is not None:
+            debug_message = "Getting page '{}' based on predefined model/template."
+            self._logger.debug(debug_message.format(model.url))
+            return self._browser.get_page(model=model)
+        elif full_url is not None and len(full_url) > 0:
+            debug_message = "Getting page '{}' based on url only."
+            self._logger.debug(debug_message.format(model.url))
+            return self._browser.get_page(model=model)
         else:
-            url = url_format.format(self._protocol, self._host, self._port, self._url)
+            self._logger.warning("No page template or url has been supplied to get_page() method.")
+            return None
 
-        self._logger.debug("Connecting to '{}'.".format(url))
-        self._browser.driver.get(url)
 
     def close_browser(self):
         self._logger.debug("Closing webbrowser.")
-        self._browser.driver.quit()
+        self._browser.quit()
 
 
 
 # main ________________________________________________________________________
 def main():
     agent = WebAgent()
+
     agent.start_up_browser()
-    agent.go_to_page('www.google.cz')
-
+    agent.get_page(GoogleMainPage())
     time.sleep(5)
+    agent.close_browser()
 
+    agent.start_up_browser()
+    agent.go_to_page("www.google.cz")
+    time.sleep(5)
     agent.close_browser()
 
 

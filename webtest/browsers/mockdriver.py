@@ -6,6 +6,7 @@
 
 from webtest.components.pagemodel.mock_element import MockElement
 from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.common.by import By
 
 class MockDriver(WebDriver):
 
