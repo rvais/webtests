@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# Framewor for testing web aplications - proof of concept 
+# Framework for testing web applications - proof of concept
 # Authors:  Roman Vais <rvais@redhat.com>
 #
 
