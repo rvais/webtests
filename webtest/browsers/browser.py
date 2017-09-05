@@ -27,6 +27,10 @@ class Browser(object):
         self._driver_running = False
 
     @property
+    def name(self):
+        return self.__class__.__name__
+
+    @property
     def driver(self):
         return self._driver
 
