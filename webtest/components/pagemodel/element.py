@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 #
-# Framewor for testing web aplications - proof of concept
+# Framework for testing web applications - proof of concept
 # Authors:  Roman Vais <rvais@redhat.com>
 #
 
 from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.support.select import Select
 
 class Element(object):
 
@@ -20,7 +21,7 @@ class Element(object):
     # attributes and properties of element -------------------------------------------------
     @property
     def id(self):
-        self._elem.id
+        return self._elem.id
 
     @property
     def classname(self):
@@ -143,6 +144,9 @@ class Element(object):
 
         return element_list
 
+    def find_element(self, selector: str, value: str):
+        return Element(self._elem.find_element(by=selector, value=value))
+
     def get_childnodes(self):
         return self.find_elements_by_xpath('./*')
 
@@ -152,12 +156,74 @@ class Element(object):
 
     def click(self):
         self._elem.click()
+        return True
+
+    def type_in(self, input_text: str):
+        return self._elem.send_keys(input_text)
 
     def submit(self):
-        self._elem.submit()
+        return self._elem.submit()
 
     def clear(self):
-        self._elem.clear()
+        return self._elem.clear()
+
+    def fill(self, value: dict):
+
+        if isinstance(value, tuple) and self.tag_name == "input":
+            return self.fill_input(*value)
+
+        elif isinstance(value, tuple) and self.tag_name == "textarea":
+            return self.fill_input(*value)
+
+        elif isinstance(value, tuple) and self.tag_name == "select":
+            return self.fill_select(*value)
+
+        elif isinstance(value, list) and self.tag_name == "form":
+            return self.fill_form(value)
+
+        else:
+            return False
+
+    def fill_input(self, node_type: str, value, xpath: str=""):
+        if self.tag_name != "input":
+            return self.find_element_by_xpath(xpath)
+
+        if self.get_attribute('type') != node_type:
+            return False
+
+        boolean_types = ['checkbox', 'radio']
+        text_types = ['date', 'datetime-local', 'email', 'month', 'number',
+                      'password', 'range', 'search', 'tel', 'text', 'time', 'url', 'week']
+
+        if (isinstance(value, bool)
+            and node_type in boolean_types):
+            if self.selected != value:
+                self.click()
+
+        elif node_type in text_types:
+            self.type_in(str(value))
+
+        else:
+            return False
+
+        return True
+
+    def fill_select(self, *options):
+        if self.tag_name != "select":
+            return False
+
+        element_select = Select(self._elem)
+        for opt in options:
+            element_select.select_by_value(opt)
+
+        return True
+
+    def fill_form(self, items: list):
+        success = True
+        for xpath, value in items:
+            element = self.find_element_by_xpath(xpath)
+            success = success and element.fill(value)
+        return success
 
 #    def location(self):
 
