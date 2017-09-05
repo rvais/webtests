@@ -31,6 +31,8 @@ class PageModel(dict):
             self._logger.debug("No components set for this template.")
             return
 
+        subcomponents = dict()
+
         self._logger.debug("Filling inner dictionary with components.")
         for arg_tuple in template:
             c = Component(*arg_tuple)
@@ -40,7 +42,16 @@ class PageModel(dict):
                 self._logger.debug("Component '{}' added to '{}' as subcomponent."
                                    .format(c.name, c.parent))
                 self[c.parent].add_subcomponent(c)
+                subcomponents[c.name] = c
+            elif c.parent is not None and c.parent in subcomponents.keys():
+                self._logger.debug("Component '{}' added to '{}' as subcomponent."
+                                   .format(c.name, c.parent))
+                subcomponents[c.parent].add_subcomponent(c)
+                subcomponents[c.name] = c
             else:
+                if c.parent is not None:
+                    self._logger.debug("Component '{}' added to template before its "
+                                       "parent component '{}'.".format(c.name, c.parent))
                 self._logger.debug("Component '{}' added to inner dictionary "
                                    "as page main component.".format(c.name))
                 self[c.name] = c
