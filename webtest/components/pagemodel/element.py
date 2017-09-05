@@ -185,10 +185,11 @@ class Element(object):
             return False
 
     def fill_input(self, node_type: str, value, xpath: str=""):
+        inp = self
         if self.tag_name != "input":
-            return self.find_element_by_xpath(xpath)
+            inp = self.find_element_by_xpath(xpath)
 
-        if self.get_attribute('type') != node_type:
+        if inp is None or inp.get_attribute('type') != node_type:
             return False
 
         boolean_types = ['checkbox', 'radio']
@@ -197,11 +198,11 @@ class Element(object):
 
         if (isinstance(value, bool)
             and node_type in boolean_types):
-            if self.selected != value:
-                self.click()
+            if inp.selected != value:
+                inp.click()
 
         elif node_type in text_types:
-            self.type_in(str(value))
+            inp.type_in(str(value))
 
         else:
             return False
