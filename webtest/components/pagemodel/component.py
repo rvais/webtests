@@ -57,9 +57,9 @@ class Component(object):
 
             # if self._subcomponents
 
-            for subcomp in self._subcomponents:
-                self._logger.debug("Setting root node for subcomponent '{}'.".format(str(subcomp)))
-                if not subcomp.set_root(self._node):
+            for comp in self._subcomponents:
+                self._logger.debug("Setting root node for subcomponent '{}'.".format(str(comp)))
+                if not comp.set_root(self._node):
                     raise Exception()
 
         except Exception as ex:
@@ -77,6 +77,22 @@ class Component(object):
 
     def get_subcomponents(self):
         return copy(self._subcomponents)
+
+    def get_subcomponent(self, name: str="", recursive: bool=False, depth: int=1):
+        if name is None or not len(name) > 0:
+            return None
+
+        found = None
+        for comp in self._subcomponents:
+            if comp.name == name:
+                found = comp
+                break
+            if recursive and depth > 0:
+                found = comp.get_subcomponent(name, recursive, depth - 1)
+                if found is not None:
+                    break
+
+        return found
 
     def add_subcomponent(self, component: 'Component'):
         self._subcomponents.append(component)
@@ -107,5 +123,5 @@ class Component(object):
         return self._node.fill_form(items)
 
     def click(self):
-        return self._node.click();
+        return self._node.click()
 
