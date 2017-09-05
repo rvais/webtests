@@ -28,12 +28,12 @@ class Page(object):
         else:
             self._browser = None
             self._logger.warning("No browser available. May cause problems in following code.")
-            
-        self._model = model
 
-        if self._model is None or model.url != browser.current_url:
+        if model is None or model.url != browser.current_url:
             self._logger.warning("No page model available. May cause problems in following code.")
-            self._model = PageModel()
+            model = PageModel()
+
+        self._model = model
 
     def __before_returning_element(self, getter):
         pass
