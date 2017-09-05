@@ -28,7 +28,8 @@ class PageModel(dict):
 
     def __fill_model(self, template: list):
         if len(template) <= 0:
-            pass
+            self._logger.debug("No components set for this template.")
+            return
 
         self._logger.debug("Filling inner dictionary with components.")
         for arg_tuple in template:
@@ -43,6 +44,8 @@ class PageModel(dict):
                 self._logger.debug("Component '{}' added to inner dictionary "
                                    "as page main component.".format(c.name))
                 self[c.name] = c
+
+        return
 
     def _create_template(self):
         return list()

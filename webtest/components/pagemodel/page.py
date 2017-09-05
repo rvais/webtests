@@ -19,15 +19,20 @@ class Page(object):
 
         if browser is not None :
             self._browser = browser
-            raw_root = browser.driver.find_element_by_xpath(Page.ROOT_XPATH)
+            self._logger.debug("Browser '{}' is available.".format(browser.name))
+            raw_root = browser.driver.find_element_by_xpath(Page.ROOT_XPATH) # :Element
+
+            self._logger.debug("Root element found is <{}> and will be set as root element.".format(raw_root.tag_name))
             self._root = Element(raw_root)
             
         else:
             self._browser = None
+            self._logger.warning("No browser available. May cause problems in following code.")
             
         self._model = model
 
         if self._model is None or model.url != browser.current_url:
+            self._logger.warning("No page model available. May cause problems in following code.")
             self._model = PageModel()
 
     def __before_returning_element(self, getter):
@@ -38,12 +43,22 @@ class Page(object):
         return self._root
 
     def get_component(self, component_name: str=ROOT_COMPONENT_NAME, subcomponent_namestr: str=None):
+        self._logger.debug("Attempt ot get component '{}'.".format(component_name))
+
         if component_name == Page.ROOT_COMPONENT_NAME:
             return self.get_root()
 
         c = self._model[component_name]
         c.set_root(self.get_root())
         return c
+
+    @property
+    def url(self):
+        if self._browser is not None:
+            return self._browser.current_url
+
+        else:
+            return self._model.url
 
 
 
