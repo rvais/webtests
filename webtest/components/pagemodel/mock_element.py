@@ -136,18 +136,34 @@ class MockElement(Element):
     def find_elements_by_css_selector(self, css_selector: str):
         return list()
 
+    def find_element(self, selector: str, value: str):
+        return None
+
     # actions performed on element -------------------------------------------------
 
 #    def location_once_scrolled_into_view(self):
 
     def click(self):
-        pass
+        return False
 
     def submit(self):
-        pass
+        return False
 
     def clear(self):
-        pass
+        return False
+
+    def fill(self, value: dict):
+        return False
+
+    def fill_input(self, node_type: str, value, xpath: str=""):
+        return False
+
+    def fill_select(self, *options):
+        return False
+
+    def fill_form(self, items: list):
+        return False
+
 
 #    def location(self):
 
