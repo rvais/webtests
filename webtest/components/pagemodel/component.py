@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# Framewor for testing web aplications - proof of concept
+# Framework for testing web applications - proof of concept
 # Authors:  Roman Vais <rvais@redhat.com>
 #
 from copy import copy
@@ -51,17 +51,21 @@ class Component(object):
         original_node = self._node
 
         try:
-            self._logger.debug("Attempting to set new root node for this component.")
+            self._logger.debug("Attempting to set new root node <{}> for this component.".format(root.tag_name))
             self._root = root
-            self._node = self._root.find_element(self.tuple)
+            self._node = self._root.find_element(self._stype, self._svalue)
+
+            # if self._subcomponents
 
             for subcomp in self._subcomponents:
+                self._logger.debug("Setting root node for subcomponent '{}'.".format(str(subcomp)))
                 if not subcomp.set_root(self._node):
                     raise Exception()
 
         except Exception as ex:
             self._logger.error("Setting new root node for this component was not successful"
                                " and may cause trouble in following code.")
+            self._logger.error(ex.args)
             self._root = original_root
             self._node = original_node
             return False
@@ -80,8 +84,28 @@ class Component(object):
     def add_subcomponents(self, components: list):
         self._subcomponents.extend(components)
 
+    def fill(self, value: dict):
+        self._logger.debug("Attempt to fill component {} with data.".format(self.name))
 
+        if isinstance(value, dict):
+            success = True
+            for subcomponent, item in value.items():
+                success = success and self[subcomponent].fill(item)
 
+            return success
 
+        else:
+            return self._node.fill(value)
 
+    def fill_input(self, node_type: str, value, xpath: str=""):
+        return self._node.fill_input(node_type,value, xpath)
+
+    def fill_select(self, *options):
+        return self._node.fill_select(options)
+
+    def fill_form(self, items: list):
+        return self._node.fill_form(items)
+
+    def click(self):
+        return self._node.click();
 
