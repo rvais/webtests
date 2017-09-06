@@ -24,23 +24,25 @@ class TestHawtioLoginNS(object):
         login = {
             'user-name' : ('text', 'admin'),
             'user-password' : ('password', 'admin'),
-            'remember-checkbox': False,
+            'remember-checkbox': ('checkbox', False),
         }
 
         main_body = page_to_test.get_component('main')
-        form = main_body.get_component('login-form', True)
+        assert main_body.is_available
+        logger.debug(main_body)
+
+        form = main_body.get_subcomponent('login-form', True)  # :Component
+        assert form.is_available
         logger.debug(str(form))
 
-        success = success and form.fill(login) # :Component
+        success = success and form.fill(login)
         logger.debug(str(success))
-        sleep(1)
 
-        send_button = page_to_test.get_component('send-button')
+        send_button = page_to_test.get_component('send-button')  # type: Component
         logger.debug(str(send_button))
 
-        success = success and send_button.click()  # :Component
+        success = success and send_button.click()
         logger.debug(str(success))
-        sleep(1)
 
         new_url = page_to_test.url
 

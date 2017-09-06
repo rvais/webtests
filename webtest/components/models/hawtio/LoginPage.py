@@ -20,10 +20,10 @@ class HawtioLoginPageNS(PageModel):
         template = [
             ('body', Selector.XPATH, '/html/body'),
             ('main', Selector.ID, 'main'),
-            ('login-form', Selector.XPATH, '/div/div/div[2]/div/div/div/form', 'main'),
-            ('user-name', Selector.XPATH, '/fieldset/div[2]/div/input', 'login-form'),
-            ('user-password', Selector.XPATH, '/fieldset/div[3]/div/input', 'login-form'),
-            ('remember-checkbox', Selector.XPATH, '/fieldset/div[4]/div/label/input', 'login-form'),
-            ('send-button', Selector.XPATH, '/fieldset/div[4]/div/button', 'login-form'),
+            ('login-form', Selector.XPATH, '//div/div/div[2]/div/div/div/form', 'main'),
+            ('user-name', Selector.XPATH, '//fieldset/div[2]/div/input', 'login-form'),
+            ('user-password', Selector.XPATH, '//fieldset/div[3]/div/input', 'login-form'),
+            ('remember-checkbox', Selector.XPATH, '//fieldset/div[4]/div/label/input', 'login-form'),
+            ('send-button', Selector.XPATH, '//fieldset/div[4]/div/button', 'login-form'),
         ]
         return template
