@@ -27,6 +27,10 @@ class Component(object):
         return self._name
 
     @property
+    def is_available(self):
+        return not isinstance(self._root, MockElement)
+
+    @property
     def selector_type(self):
         return self._stype
 
@@ -53,7 +57,7 @@ class Component(object):
         try:
             self._logger.debug("Attempting to set new root node <{}> for this component.".format(root.tag_name))
             self._root = root
-            self._node = self._root.find_element(self._stype, self._svalue)
+            self._node = self._root.find_element(self._root, self._stype, self._svalue)
 
             # if self._subcomponents
 
@@ -106,22 +110,22 @@ class Component(object):
         if isinstance(value, dict):
             success = True
             for subcomponent, item in value.items():
-                success = success and self[subcomponent].fill(item)
-
+                self._logger.debug("component {}, data {}.".format(subcomponent, item))
+                success = success and self.get_subcomponent(subcomponent).fill(item)
             return success
 
         else:
             return self._node.fill(value)
 
     def fill_input(self, node_type: str, value, xpath: str=""):
-        return self._node.fill_input(node_type,value, xpath)
+        return self._node.fill_input(self._node, node_type,value, xpath)
 
     def fill_select(self, *options):
-        return self._node.fill_select(options)
+        return self._node.fill_select(self._node,options)
 
     def fill_form(self, items: list):
-        return self._node.fill_form(items)
+        return self._node.fill_form(self._node, items)
 
     def click(self):
-        return self._node.click()
+        return self._node.click(self._node)
 
