@@ -10,10 +10,20 @@ import errno
 
 # definiton of var & const_____________________________________________
 
-DEFAULT_LOG_LEVEL = logging.DEBUG  # CRITICAL | ERROR | WARNING | INFO | NOTSET
 PATH_TO_LOGS = './logs'
+TRACE = 5
+DUMP = 1
+
+DEFAULT_LOG_LEVEL = logging.INFO  # CRITICAL | ERROR | WARNING | INFO | TRACE | NOTSET
 
 def get_logger(name="logger", level=None, sfx=None):
+    if not isinstance(logging.getLoggerClass(), CustomLogger):
+        logging.addLevelName(TRACE, "TRACE")
+        logging.TRACE = TRACE
+        logging.addLevelName(DUMP, "DUMP")
+        logging.DUMP = DUMP
+        logging.setLoggerClass(CustomLogger)
+
     logpath = make_path_for_logs()
     if sfx is not None:
         name = "{}{}".format(name, sfx)
@@ -58,3 +68,10 @@ def make_path_for_logs(path=PATH_TO_LOGS):
             raise
     finally:
         return path
+
+class CustomLogger(logging.Logger):
+    def trace(self, msg, *args, **kwargs):
+        self.log(TRACE, msg, *args, **kwargs)
+
+    def dump(self, msg, *args, **kwargs):
+        self.log(DUMP, msg, *args, **kwargs)
