@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# Framewor for testing web aplications - proof of concept
+# Framework for testing web applications - proof of concept
 # Authors:  Roman Vais <rvais@redhat.com>
 #
 
@@ -8,7 +8,9 @@ from webtest.components.pagemodel.element import Element
 
 class MockElement(Element):
 
-    def __init__(self, tag: str, id: str="", classname: str="", text: str="mock element", width: int=0, height: int=0):
+    def __init__(self, tag: str, id: str = "", classname: str = "", text: str = "mock element", width: int = 0, height: int = 0):
+        super(MockElement, self).__init__(None)
+
         self._elem = self
         self._tag_name = tag
         self._id = id
@@ -18,7 +20,7 @@ class MockElement(Element):
         self._height = height
 
     def __eq__(self, elem):
-        return self._elem == elem._elem
+        return isinstance(elem, MockElement) and str(self._elem) == str(elem)
 
     def __ne__(self, element):
         return not self.__eq__(element)
@@ -27,151 +29,79 @@ class MockElement(Element):
         pattern = '<{0} id="{1}" class="{2}" width="{4}" height="{5}">{3}<{0}/>\n'
         return pattern.format(self._tag_name, self._id, self._classname, self._text_node, self._width, self.height)
 
-    # attributes and properties of element -------------------------------------------------
-    @property
-    def id(self):
-        self._elem.id
+    # property and attribute getters __________________________________________
+    # stable properties
+    def _get_stable_properties(self):
+        pass
 
-    @property
-    def classname(self):
-        return ""
+    def get_id(self, refresh: bool=False) -> str:
+        return self._id
 
-    @property
-    def tag_name(self):
-        return self._elem.tag_name
+    def get_class_name(self, refresh: bool = False) -> str:
+        return self._classname
 
-    @property
-    def text(self):
-        return self._elem.text
+    def get_tag_name(self, refresh: bool = False) -> str:
+        return self._tag_name
 
-    @property
-    def width(self):
-        return self._width
+    def get_size(self, refresh: bool = False) -> dict:
+        return self._size
 
-    @property
-    def height(self):
-        return self._height
+    def get_text(self, refresh: bool = False) -> str:
+        return self._text_node
 
+    def get_width(self, refresh: bool = False) -> int:
+        return self.get_size(refresh)["width"]
+
+    def get_height(self, refresh: bool = False) -> int:
+        return self.get_size(refresh)["height"]
+
+    # unstable properties that require to be queried every time
     @property
-    def selected(self):
+    def visible(self) -> bool:
         return False
 
     @property
-    def enabled(self):
+    def selected(self) -> bool:
         return False
 
-    def get_property(self, name: str):
+    @property
+    def enabled(self) -> bool:
+        return False
+
+    def get_css_property(self, name: str) -> str:
         return ""
 
-    def get_attribute(self, name: str):
+    def get_attribute(self, name: str) -> str:
+        return  ""
+
+    def get_css_property_value(self, property_name: str) -> str:
         return ""
 
-    def get_size(self):
-        return {"width" : self.width, "height" : self.height}
-
-    def get_css_property_value(self, property_name: str):
-        return ""
-
-    # searching for inner elements -------------------------------------------------
-    def find_element_by_id(self, id: str):
-        if id == self._id:
-            return self
+    # searching for elements
+    def get_element(self, selector: str, value: str) -> 'Element' or None:
+        log_message = "Searching for element by '{selector}', with '{value}' in MockElement!"
+        self._logger.warning(log_message.format(selector=selector, value=value))
         return None
 
-    def find_elements_by_id(self, id: str):
-        elem_list = list()
-        if id == self._id:
-             elem_list.append(self)
-        return elem_list
-
-    def find_element_by_class_name(self, classname: str):
-        if classname == self._classname:
-            return self
-        return None
-
-    def find_elements_by_class_name(self, classname: str):
-        elem_list = list()
-        if classname == self._classname:
-            elem_list.append(self)
-        return elem_list
-
-    def find_element_by_tag_name(self, tagname: str):
-        if tagname == self._tag_name:
-            return self
-        return None
-
-    def find_elements_by_tag_name(self, tagname: str):
-        elem_list = list()
-        if tagname == self._tag_name:
-            elem_list.append(self)
-        return elem_list
-
-    def find_element_by_name(self, name: str):
-        return None
-
-    def find_elements_by_name(self, name: str):
+    def get_multiple_elements(self, selector: str, value: str) -> list:
+        log_message = "Searching for multiple elements by '{selector}', with '{value}' in MockElement!"
+        self._logger.warning(log_message.format(selector=selector, value=value))
         return list()
 
-    def find_element_by_xpath(self, xpath: str):
-        return self
-
-    def find_elements_by_xpath(self, xpath: str):
-        return list()
-
-    def find_element_by_link_text(self, link_text: str):
-        return None
-
-    def find_elements_by_link_text(self, link_text: str):
-        return list()
-
-    def find_element_by_partial_link_text(self, link_text: str):
-        return None
-
-    def find_elements_by_partial_link_text(self, link_text: str):
-        return list()
-
-    def find_element_by_css_selector(self, css_selector: str):
-        return None
-
-    def find_elements_by_css_selector(self, css_selector: str):
-        return list()
-
-    def find_element(self, selector: str, value: str):
-        return None
-
-    # actions performed on element -------------------------------------------------
-
-#    def location_once_scrolled_into_view(self):
-
+    # actions performed on element
     def click(self):
+        self._logger.warning("Attempt to click on MockElement!")
+        return False
+
+    def type_in(self, input_text: str):
+        self._logger.warning("Attempt to fill text {} in MockElement!".format(input_text))
         return False
 
     def submit(self):
+        self._logger.warning("Attempt to perform submit MockElement!")
         return False
 
     def clear(self):
+        self._logger.warning("Attempt to perform clear MockElement!")
         return False
-
-    def fill(self, value: dict):
-        return False
-
-    def fill_input(self, node_type: str, value, xpath: str=""):
-        return False
-
-    def fill_select(self, *options):
-        return False
-
-    def fill_form(self, items: list):
-        return False
-
-
-#    def location(self):
-
-#    def screenshot_as_base64(self):
-
-#    def screenshot_as_png(self):
-
-#    def screenshot(self, filename: str):
-
-
 
