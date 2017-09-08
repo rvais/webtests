@@ -21,7 +21,7 @@ class PageModel(dict):
         self._port = port
         self._url = url
 
-        self._logger.debug("Creating '{}' page model with '{}' url address.".format(class_name, self.url))
+        self._logger.info("Creating '{}' page model with '{}' url address.".format(class_name, self.url))
 
         template = self._create_template()
         self.__fill_model(template)
@@ -33,26 +33,25 @@ class PageModel(dict):
 
         subcomponents = dict()
 
-        self._logger.debug("Filling inner dictionary with components.")
+        self._logger.info("Filling inner dictionary with components.")
         for arg_tuple in template:
             c = Component(*arg_tuple)
-            self._logger.debug("Component '{}' created.".format(c.name))
 
             if c.parent is not None and c.parent in self.keys():
-                self._logger.debug("Component '{}' added to '{}' as subcomponent."
+                self._logger.info("Component '{}' added to '{}' as subcomponent."
                                    .format(c.name, c.parent))
                 self[c.parent].add_subcomponent(c)
                 subcomponents[c.name] = c
             elif c.parent is not None and c.parent in subcomponents.keys():
-                self._logger.debug("Component '{}' added to '{}' as subcomponent."
+                self._logger.info("Component '{}' added to '{}' as subcomponent."
                                    .format(c.name, c.parent))
                 subcomponents[c.parent].add_subcomponent(c)
                 subcomponents[c.name] = c
             else:
                 if c.parent is not None:
-                    self._logger.debug("Component '{}' added to template before its "
+                    self._logger.warning("Component '{}' added to template before its "
                                        "parent component '{}'.".format(c.name, c.parent))
-                self._logger.debug("Component '{}' added to inner dictionary "
+                self._logger.info("Component '{}' added to inner dictionary "
                                    "as page main component.".format(c.name))
                 self[c.name] = c
 
