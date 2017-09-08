@@ -103,11 +103,14 @@ class Browser(object):
         self._driver_running = False
 
     def get_page(self, full_url:str =None, model: PageModel=None):
+
         if full_url is not None and len(full_url) > 0:
+            self._logger.debug("Browser has URL available.")
             self._driver.get(full_url)
             self._current_page = Page(self)
 
         elif model is not None:
+            self._logger.debug("Browser has Page Model available.")
             self._driver.get(model.url)
             self._current_page = Page(self, model)
 
