@@ -9,7 +9,7 @@ from selenium.webdriver.support.select import Select
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from time import time, sleep
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
 from webtest.common.logger import get_logger
 
 # EC.url_changes
@@ -27,9 +27,9 @@ class Wait(object) :
 
     # global profile of waiting for conditions
     __profile__ = {
-        'exception-list' : [NoSuchElementException,],
+        'exception-list' : [NoSuchElementException, StaleElementReferenceException],
         'polling-period' : 2,
-        'timeout' : 30,
+        'timeout' : 60,
         'max_attempts' : 30,
     }
 
@@ -46,16 +46,17 @@ class Wait(object) :
         self._polling_period = Wait.__profile__['polling-period']
         self._timeout = Wait.__profile__['timeout']
         self._max = Wait.__profile__['max_attempts']
+        self._limited = self._max >= 0 or self._timeout > 0
 
         # customize setting according to parameters
         # self._setup(*args, **kwargs)
 
         # log current settings
-        self._logger.debug("Initialized wait conditions to following values:")
-        self._logger.debug("'{}':  {}". format('exception-list', self._exception_list))
-        self._logger.debug("'{}':  {}". format('polling-period', self._polling_period))
-        self._logger.debug("'{}':  {}". format('timeout', self._timeout))
-        self._logger.debug("'{}':  {}". format('max_attempts', self._max))
+        self._logger.trace("Initialized wait conditions to following values:")
+        self._logger.trace("'{}':  {}". format('exception-list', self._exception_list))
+        self._logger.trace("'{}':  {}". format('polling-period', self._polling_period))
+        self._logger.trace("'{}':  {}". format('timeout', self._timeout))
+        self._logger.trace("'{}':  {}". format('max_attempts', self._max))
 
         # crete tuple of exceptions that can be used in try-except statement
         self._exceptions = tuple(self._exception_list)
@@ -79,14 +80,14 @@ class Wait(object) :
 
 
     def __call__(self, *args, **kwargs):
-        self._logger.debug("Waiting on condition ...")
+        self._logger.trace("Waiting on condition ...")
         debug_print = "Wait call\n{}"
         for x in args:
             debug_print += "\n{}"
         for x in kwargs:
             debug_print += "\n{}"
 
-        self._logger.debug(debug_print.format(self, *args, **kwargs))
+        self._logger.trace(debug_print.format(self, *args, **kwargs))
 
         timer = time() + self._timeout
         counter = 0
@@ -100,7 +101,7 @@ class Wait(object) :
                 # else:
                 #    self._logger.warning("Condition on result failed. Waiting another period ...")
             except self._exceptions as ex:
-                if timer <= time() or counter >= self._max:
+                if self._limited and (timer <= time() or counter >= self._max):
                     self._logger.warning("All possible attempts or timer on condition "
                                          "were exhausted. Re-rising exception.")
                     raise ex
@@ -126,9 +127,17 @@ class Wait(object) :
                 Wait.__profile__[key] = profile[key]
         return check
 
+# to limit, immediate polling
+no_stop = {
+    'exception-list': list(),
+    'polling-period': 0,
+    'timeout': 0,
+    'max_attempts': 0,
+}
+
 # minimal periods for waiting, sort of impatient profile
 minimal_wait = {
-    'exception-list' : [NoSuchElementException,],
+    'exception-list' : list(),
     'polling-period' : 0.2,
     'timeout' : 5,
     'max_attempts' : 15,
@@ -136,7 +145,7 @@ minimal_wait = {
 
 # short periods for waiting but noticeable
 short_wait = {
-    'exception-list' : [NoSuchElementException,],
+    'exception-list' : list(),
     'polling-period' : 0.5,
     'timeout' : 7,
     'max_attempts' : 100,
@@ -144,7 +153,7 @@ short_wait = {
 
 # long periods for waiting so it is noticeable significantly during execution
 visible_wait = {
-    'exception-list' : [NoSuchElementException,],
+    'exception-list' : list(),
     'polling-period' : 1,
     'timeout' : 15,
     'max_attempts' : 25,
