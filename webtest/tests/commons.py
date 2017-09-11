@@ -42,7 +42,7 @@ def page_to_test(request):
         page = agent.go_to_page(*url)
 
     else:
-        page = agent.get_page(model=model)
+        page = agent.get_page(pmodel=model)
 
     sleep(2)
 
