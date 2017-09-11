@@ -4,8 +4,6 @@
 # Authors:  Roman Vais <rvais@redhat.com>
 #
 
-# //*[@id="hplogo"] | /html/body
-
 from webtest.components.pagemodel.page import PageModel
 from webtest.common.selector import Selector
 from webtest.common.http import Constants
@@ -13,7 +11,7 @@ from webtest.common.http import Constants
 
 class HawtioLoginPageNS(PageModel):
     def __init__(self, *arg, **kw):
-        super(HawtioLoginPageNS, self).__init__(protocol=Constants.PROTOCOL_HTTP, host="rhel7", port=8161, url="hawtio/login", *arg, **kw)
+        super(HawtioLoginPageNS, self).__init__(protocol=Constants.PROTOCOL_HTTP, host="rhel7", port=8161, url="console", *arg, **kw)
 
     def _create_template(self):
         # ( name: str, selector_type: Selector.*, selector_value: str, parent: str=None)
