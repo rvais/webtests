@@ -4,9 +4,11 @@
 # Authors:  Roman Vais <rvais@redhat.com>
 #
 
+from selenium.webdriver.remote.webdriver import WebDriver
 from webtest.browsers.mockdriver import MockDriver
 from webtest.components.pagemodel.model import PageModel
 from webtest.components.pagemodel.page import Page
+from webtest.common.wait_for import Wait
 from webtest.common.logger import get_logger
 
 class Browser(object):
@@ -16,7 +18,7 @@ class Browser(object):
         self._logger = get_logger(class_name)
 
         self._selenium = None
-        self._driver = MockDriver()
+        self._driver = MockDriver() # type:WebDriver
         self._driver_path = ''
         self._browser_path = ''
         self._private_mode = False
@@ -124,5 +126,12 @@ class Browser(object):
     def current_url(self):
         return self.driver.current_url
 
+    @Wait
+    def inject_script(self, script: str, async: bool=True):
+        self._driver.set_script_timeout(10)
+        if async:
+            result = self._driver.execute_async_script(script)
+        else:
+            result = self._driver.execute_script(script)
 
-
+        return result

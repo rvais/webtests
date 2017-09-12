@@ -3,9 +3,9 @@
 # Framework for testing web applications - proof of concept
 # Authors:  Roman Vais <rvais@redhat.com>
 #
-from time import sleep
 
-from webtest.browsers.browser import Browser
+# from time import sleep
+#from webtest.browsers.browser import Browser
 from webtest.components.pagemodel.model import PageModel
 from webtest.components.pagemodel.element import Element
 from webtest.components.pagemodel.component import Component, RootComponent
@@ -115,10 +115,9 @@ class Page(object):
         else:
             return self._model.url
 
-
-
-
-
+    def execute_script(self, script: str, async: bool=True):
+        browser = self._browser # type: Browser
+        return browser.inject_script(browser, script, async)
 
 
 
