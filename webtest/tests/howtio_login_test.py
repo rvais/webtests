@@ -22,8 +22,8 @@ class TestHawtioLoginNS(object):
         success = True
         original_url = page_to_test.url
         login = {
-            'user-name' : ('text', 'admin'),
-            'user-password' : ('password', 'admin'),
+            'user-name': ('text', 'admin'),
+            'user-password': ('password', 'admin'),
             'remember-checkbox': ('checkbox', False),
         }
 
@@ -31,18 +31,20 @@ class TestHawtioLoginNS(object):
         assert main_body.is_available
         logger.debug(main_body)
 
-        form = main_body.get_subcomponent('login-form', True)  # :Component
-        assert form.is_available
+        form = main_body.get_subcomponent('login-form', True)  # type: Component
+        assert form is not None
         logger.debug(str(form))
 
         success = success and form.fill(login)
-        logger.debug(str(success))
+        logger.debug("Form filling ... {}".format(success))
+        sleep(1)
 
-        send_button = page_to_test.get_component('send-button')  # type: Component
+        send_button = form.get_subcomponent('send-button', True)
         logger.debug(str(send_button))
 
-        success = success and send_button.click()
-        logger.debug(str(success))
+        success = success and send_button.click()  # :Component
+        logger.debug("Send button click ... {}".format(success))
+        sleep(1)
 
         new_url = page_to_test.url
 
