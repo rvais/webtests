@@ -69,11 +69,6 @@ class Component(object):
             self._root = root
             self._node = self._root.get_element(self._root, self._stype, self._svalue)
 
-            for comp in self._subcomponents:
-                self._logger.debug("Setting root node for subcomponent '{}'.".format(comp.name))
-                if not comp.set_root(self._node):
-                    raise Exception()
-
         except Exception as ex:
             self._logger.error("Setting new root node for component '{}' was not successful"
                                " and may cause trouble in following code.".format(self.name))
@@ -90,7 +85,9 @@ class Component(object):
     def get_subcomponents(self) -> list:
         for component in self._subcomponents:
             if isinstance(component.get_element_node(), MockElement) and not isinstance(self._root, MockElement):
-                component.set_root(self._node)
+                self._logger.debug("Setting root node for subcomponent '{}'.".format(component.name))
+                if not component.set_root(self._node):
+                    raise Exception("Could not set root node for given component.")
 
         return copy(self._subcomponents)
 
@@ -107,6 +104,12 @@ class Component(object):
                 found = comp.get_subcomponent(name, recursive, depth - 1)
                 if found is not None:
                     break
+
+        if found is not None:
+            if isinstance(found.get_element_node(), MockElement) and not isinstance(self._root, MockElement):
+                self._logger.debug("Setting root node for subcomponent '{}'.".format(found.name))
+                if not found.set_root(self._node):
+                    raise Exception("Could not set root node for given component.")
 
         return found
 
