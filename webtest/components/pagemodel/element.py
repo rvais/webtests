@@ -379,23 +379,39 @@ class Element(object):
     @Wait
     def click(self) -> bool:
         self._logger.trace("Performing click on element '{}'.".format(self))
-        self._elem.click()
-        return True
+        if self.visible:
+            self._elem.click()
+            return True
+
+        self._logger.trace("Element '{}' is not visible.".format(self))
+        return False
 
     @Wait
     def type_in(self, input_text: str) -> bool:
         self._logger.trace("Trying to type text '{}' in element '{}'.".format(input_text, self))
-        return self._elem.send_keys(input_text)
+        if self.visible:
+            return self._elem.send_keys(input_text)
+
+        self._logger.trace("Element '{}' is not visible.".format(self))
+        return False
 
     @Wait
     def submit(self) -> bool:
         self._logger.trace("Trying to perform 'submit' on element '{}'.".format(self))
-        return self._elem.submit()
+        if self.visible:
+            return self._elem.submit()
+
+        self._logger.trace("Element '{}' is not visible.".format(self))
+        return False
 
     @Wait
     def clear(self) -> bool:
         self._logger.trace("Trying to 'perform' clear on element '{}'.".format(self))
-        return self._elem.clear()
+        if self.visible:
+            return self._elem.clear()
+
+        self._logger.trace("Element '{}' is not visible.".format(self))
+        return False
 
     @Wait
     def scroll_into_view(self) -> bool:
@@ -411,6 +427,11 @@ class Element(object):
             self._logger.debug("Element <{}> is not one of the predefined "
                                "elements that support 'fill' action.".format(self.tag_name))
             return False
+
+        if not self.visible:
+            self._logger.trace("Element '{}' is not visible.".format(self))
+            return False
+
         success = self._fill_element[self.tag_name](self, value)
         self._logger.trace("'fill' action on <{}> element success = '{}' .".format(self.tag_name, success))
         return success
@@ -419,6 +440,11 @@ class Element(object):
     def fill_form(self, items: list) -> bool:
         if self.tag_name != 'form':
             self._logger.warning("Attempt to act as if <{}> was <form> element".format(self.tag_name))
+
+        if not self.visible:
+            self._logger.trace("Element '{}' is not visible.".format(self))
+            return False
+
         # expected result of operation
         success = True
 
@@ -460,6 +486,10 @@ class Element(object):
             self._logger.warning("Attempt to act as if <{}> was <input> element".format(self.tag_name))
             return False
 
+        if not self.visible:
+            self._logger.trace("Element '{}' is not visible.".format(self))
+            return False
+
         if len(data) == 2:
             data = list(data)
             data.append(None)
@@ -497,8 +527,12 @@ class Element(object):
 
     @Wait
     def fill_select(self, options: list) -> bool:
-        if self.tag_name != 'input':
+        if self.tag_name != 'select':
             self._logger.warning("Attempt to act as if <{}> was <select> element".format(self.tag_name))
+            return False
+
+        if not self.visible:
+            self._logger.trace("Element '{}' is not visible.".format(self))
             return False
 
         element_select = Select(self._elem)
@@ -509,6 +543,13 @@ class Element(object):
 
     @Wait
     def fill_textarea(self, data: str or list or tuple) -> bool:
+        if self.tag_name != 'textarea':
+            self._logger.warning("Attempt to act as if <{}> was <textarea> element".format(self.tag_name))
+
+        if not self.visible:
+            self._logger.trace("Element '{}' is not visible.".format(self))
+            return False
+
         if not isinstance(data,str):
             text = "\n".join(list(data))
         else:
