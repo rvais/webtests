@@ -115,6 +115,10 @@ class Page(object):
         else:
             return self._model.url
 
+    @property
+    def model(self):
+        return self._model
+
     def execute_script(self, script: str, async: bool=True):
         self._logger.info("Executing script.")
         browser = self._browser # type: Browser
