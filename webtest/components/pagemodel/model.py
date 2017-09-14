@@ -77,7 +77,7 @@ class PageModel(dict):
     def derive_template(
             self,
             name: str,
-            template: list,
+            template: list=list(),
             protocol: str or None=None,
             host: str or None=None,
             port: int or None=None,
@@ -90,8 +90,9 @@ class PageModel(dict):
         new_model = PageModel(protocol, host, port, url)
 
         new_model.__set_name(name)
+        new_template = self._create_template()
+        new_template.extend(template)
 
-        new_model.__fill_model(self._create_template())
-        new_model.__fill_model(template)
+        new_model.__fill_model(new_template)
 
         return new_model
