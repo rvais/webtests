@@ -13,7 +13,7 @@ from webtest.components.pagemodel.mock_element import Element
 from webtest.common.logger import get_logger
 
 class Component(object):
-    def __init__(self, name: str, selector_type: str, selector_value: str, parent: str=None):
+    def __init__(self, name: str, selector_type: str, selector_value: str, parent: str=None, construction_exclude=False):
         class_name = str(self.__class__.__name__)
         self._logger = get_logger(class_name)
 
@@ -21,6 +21,7 @@ class Component(object):
         self._stype = selector_type
         self._svalue = selector_value
         self._parent = parent
+        self._construct = not construction_exclude
         self._root = MockElement("root")
         self._node = MockElement("node")
 
@@ -50,6 +51,10 @@ class Component(object):
 
     @property
     def parent(self) -> Element or MockElement:
+        return self._parent
+
+    @property
+    def construct(self) -> bool:
         return self._parent
 
     @property
