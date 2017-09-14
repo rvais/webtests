@@ -5,4 +5,4 @@
 #
 
 import pytest
-from webtest.tests.commons import page_to_test
+from webtest.tests.commons import page_to_test, user_agent

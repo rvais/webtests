@@ -8,6 +8,8 @@ from time import sleep
 import pytest
 from webtest.webagent import WebAgent
 from webtest.common.logger import get_logger
+from webtest.actions.common.open_browser import OpenBrowser
+from webtest.actions.common.close_browser import CloseBrowser
 
 @pytest.fixture(scope="module")
 def page_to_test(request):
@@ -53,3 +55,22 @@ def page_to_test(request):
 
     logger.info("Tear-down phase.")
     agent.close_browser()
+
+@pytest.fixture(scope="module")
+def user_agent(request):
+    logger = get_logger("Fixture")
+
+    logger.info("Setup phase.")
+
+    logger.debug("Getting browser name form the test case.")
+    browser_name = getattr(request.module, "browser_name", WebAgent.BROWSER_CHROME)
+
+    models = getattr(request.module, "models", list())
+
+    logger.debug("Instantiating WebAgent class.")
+    agent = WebAgent(models)
+
+    assert agent.perform_action(OpenBrowser(browser_name))
+    yield agent
+    logger.info("Tear-down phase.")
+    assert agent.perform_action(CloseBrowser())
