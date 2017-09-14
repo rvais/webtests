@@ -34,7 +34,11 @@ class Component(object):
 
     @property
     def is_available(self) -> bool:
-        return not isinstance(self._root, MockElement)
+        return not isinstance(self._node, MockElement)
+
+    @property
+    def visible(self) -> bool:
+        return self._node.visible
 
     @property
     def selector_type(self) -> str:
