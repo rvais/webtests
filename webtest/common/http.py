@@ -23,12 +23,29 @@ def format_url(protocol: str=Constants.PROTOCOL_HTTP, host: str='localhost', por
 
 def relax_url(full_url: str, relax_anchor: bool=True, relax_get_method: bool=True):
     if relax_anchor:
-        index = full_url.rindex('#')
-        if index >= 0:
-            full_url = full_url[0 : index]
+        try:
+            index = full_url.rindex('#')
+            if index >= 0:
+                full_url = full_url[0 : index]
+        except ValueError as ex:
+            pass
+
     if relax_get_method:
-        index = full_url.rindex('?')
-        if index >= 0:
-            full_url = full_url[0 : index]
+        try:
+            index = full_url.rindex('?')
+            if index >= 0:
+                full_url = full_url[0 : index]
+        except ValueError as ex:
+            pass
+
+    return full_url
+
+def cut_host_from_url(full_url: str) -> str:
+    index = len("{}://".format(Constants.PROTOCOL_HTTPS))
+    try:
+        index = full_url.index("/", index)
+        full_url = full_url[index:]
+    except Exception as ex:
+        pass
 
     return full_url
