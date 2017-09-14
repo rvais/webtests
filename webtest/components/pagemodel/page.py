@@ -27,7 +27,7 @@ class Page(object):
 
         if browser is not None :
             self._browser = browser
-            self._logger.info("Browser '{}' is available.".format(browser.name))
+            self._logger.debug("Browser '{}' is available.".format(browser.name))
 
         else:
             self._browser = None
@@ -116,9 +116,9 @@ class Page(object):
             return self._model.url
 
     def execute_script(self, script: str, async: bool=True):
+        self._logger.info("Executing script.")
         browser = self._browser # type: Browser
         return browser.inject_script(browser, script, async)
-
 
 
 
