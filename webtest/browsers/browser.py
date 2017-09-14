@@ -25,27 +25,27 @@ class Browser(object):
         self._maximized = True
         self._args = list()
         self._excludes = list()
-        self._current_page = Page(None)
+        self._current_page = None
         self._driver_running = False
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self.__class__.__name__
 
     @property
-    def driver(self):
+    def driver(self) -> WebDriver:
         return self._driver
 
     @property
-    def path_to_driver(self):
+    def path_to_driver(self) -> str:
         return self._driver_path
     
     @property
-    def path_to_browser(self):
+    def path_to_browser(self) -> str:
         return self._browser_path
 
     @property
-    def is_running(self):
+    def is_running(self) -> bool:
         return self._driver_running
 
     def set_cmd_arguments(self, args: list):
@@ -80,12 +80,12 @@ class Browser(object):
         else:
             self._browser_path = path
 
-    def use_private_mode(self, private: bool =True):
+    def use_private_mode(self, private: bool =True) -> bool:
         original = self._private_mode
         self._private_mode = private
         return original
 
-    def maximize(self, maximize:bool=True):
+    def maximize(self, maximize:bool=True) -> bool:
         if self.is_running:
             return self._maximize_now()
 
@@ -104,7 +104,7 @@ class Browser(object):
         self._driver.quit()
         self._driver_running = False
 
-    def get_page(self, full_url:str =None, model: PageModel=None):
+    def get_page(self, full_url:str =None, model: PageModel=None, update: bool=False) -> Page:
 
         if full_url is not None and len(full_url) > 0:
             self._logger.debug("Browser has URL available.")
@@ -113,21 +113,28 @@ class Browser(object):
 
         elif model is not None:
             self._logger.debug("Browser has Page Model available.")
-            self._driver.get(model.url)
+            if not update:
+                self._driver.get(model.url)
+
+            if not self.current_url.startswith(model.url):
+                self._logger.warning("Current browser's url and template's url do not match.")
+                msg = "browser's url:\n\t\t'{}'\n\ttemplate's url:\n\t\t'{}'"
+                self._logger.warning(msg.format(self.current_url, model.url))
+
             self._current_page = Page(self, model)
 
         return self._current_page
 
     @property
-    def get_current_page(self):
+    def get_current_page(self) -> Page:
         return self._current_page
 
     @property
-    def current_url(self):
+    def current_url(self) -> str:
         return self.driver.current_url
 
     @Wait
-    def inject_script(self, script: str, async: bool=True):
+    def inject_script(self, script: str, async: bool=True) -> object:
         self._driver.set_script_timeout(10)
         if async:
             result = self._driver.execute_async_script(script)
