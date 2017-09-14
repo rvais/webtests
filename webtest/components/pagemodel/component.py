@@ -50,7 +50,7 @@ class Component(object):
         return self._svalue
 
     @property
-    def parent(self) -> Element or MockElement:
+    def parent(self) -> str or None:
         return self._parent
 
     @property
