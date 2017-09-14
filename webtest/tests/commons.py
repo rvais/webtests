@@ -74,3 +74,10 @@ def user_agent(request):
     yield agent
     logger.info("Tear-down phase.")
     assert agent.perform_action(CloseBrowser())
+
+
+class Performer(object):
+
+    def perform_actions(self, agent: WebAgent, actions: list=list()):
+        for action in actions:
+            assert agent.perform_action(action)
