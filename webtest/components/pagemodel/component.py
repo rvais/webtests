@@ -70,13 +70,13 @@ class Component(object):
             self._node = self._root.get_element(self._root, self._stype, self._svalue)
 
             for comp in self._subcomponents:
-                self._logger.debug("Setting root node for subcomponent '{}'.".format(str(comp.name)))
+                self._logger.debug("Setting root node for subcomponent '{}'.".format(comp.name))
                 if not comp.set_root(self._node):
                     raise Exception()
 
         except Exception as ex:
-            self._logger.error("Setting new root node for this component was not successful"
-                               " and may cause trouble in following code.")
+            self._logger.error("Setting new root node for component '{}' was not successful"
+                               " and may cause trouble in following code.".format(self.name))
             self._logger.error(ex.args)
             self._root = original_root
             self._node = original_node
