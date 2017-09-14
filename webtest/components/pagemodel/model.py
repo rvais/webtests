@@ -4,6 +4,7 @@
 # Authors:  Roman Vais <rvais@redhat.com>
 #
 
+from copy import copy
 from webtest.common.http import Constants as HTTP_CONST
 from webtest.common.http import format_url
 from webtest.components.pagemodel.component import Component
@@ -23,6 +24,7 @@ class PageModel(dict):
         self._host = host
         self._port = port
         self._url = url
+        self._component_list = list()
 
         self._logger.info("Creating '{}' page model with '{}' url address.".format(class_name, self.url))
 
@@ -58,6 +60,10 @@ class PageModel(dict):
                                    "as page main component.".format(c.name))
                 self[c.name] = c
 
+            if c.parent is None or (c.parent is not None and c.construct):
+                pair = (c.name, c.parent)
+                self._component_list.append(pair)
+
         return
 
     def __set_name(self, name: str):
@@ -73,6 +79,9 @@ class PageModel(dict):
     @property
     def url(self):
         return format_url(self._protocol, self._host, self._port, self._url)
+
+    def get_component_list(self):
+        return copy(self._component_list)
 
     def derive_template(
             self,
