@@ -70,7 +70,7 @@ class Component(object):
         original_node = self._node
 
         try:
-            self._logger.debug("Attempting to set new root node <{}> for this component.".format(root.tag_name))
+            self._logger.debug("Attempting to set new root node <{}> for '{}' component.".format(root.tag_name, self.name))
             self._root = root
             self._node = self._root.get_element(self._root, self._stype, self._svalue)
 
