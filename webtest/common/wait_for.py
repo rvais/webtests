@@ -84,10 +84,15 @@ class Wait(object) :
         debug_print = "Wait call\n{}"
         for x in args:
             debug_print += "\n{}"
-        for x in kwargs:
-            debug_print += "\n{}"
 
-        self._logger.trace(debug_print.format(self, *args, **kwargs))
+        if kwargs and len(kwargs) > 0:
+            for x in kwargs:
+                if x is not None:
+                    debug_print += "\n{" + x + "}"
+
+            self._logger.trace(debug_print.format(self, *args, **kwargs))
+        else:
+            self._logger.trace(debug_print.format(self, *args))
 
         timer = time() + self._timeout
         counter = 0
