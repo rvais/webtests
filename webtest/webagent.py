@@ -159,19 +159,29 @@ class WebAgent(object):
 
     def perform_action(self, action: 'UserAction') -> bool:
         success = action.perform_self(self)
+        # It is not necessary to wait for frameworks twice #0
         waited = False
-        if action.expected_redirection():
-            waited = True
-            action.wait_for_frameworks(self)
 
+        if action.expected_redirection():
+            # It is not necessary to wait for frameworks twice #1
+            waited = True
+
+            # there is minimal time required for browser to even
+            sleep(1)
+
+            # remove anchors and HTTP GET method variables
+            # otherwise we would have to create infinite number of templates/models
             url = relax_url(self._browser.current_url)
 
+            # get template/model or derive it by cloning current one
             if url in self._templates_by_url.keys():
                 model = self._templates_by_url[url]
             else:
                 self._logger.debug(str(self._templates_by_url.keys()))
                 self._logger.debug(url)
 
+                # make hash so new template can be stored and later identified by the same url or name
+                # but does not override any of the current templates
                 h = hashlib.sha256()
                 current_model = self._browser.get_current_page.model
 
@@ -179,19 +189,26 @@ class WebAgent(object):
                 h.update(current_model.url.encode('utf-8'))
                 h.update(url.encode('utf-8'))
 
+                # new name incorporates the hash
                 name = "{}-{}".format(current_model.name, h.hexdigest())
 
                 model = current_model.derive_template(name, url=cut_host_from_url(url))
                 self._templates_by_url[url] = model
                 self._templates_by_name[name] = model
 
-            self._browser.get_page(model=model, update=True)
+            # get new page that has corresponding template
+            page = self._browser.get_page(model=model, update=True)
+            page.construct_page()
 
+            # wait for frameworks to recreate page elements in browser
+            action.wait_for_frameworks(self)
+
+        # It is not necessary to wait for frameworks twice #2
         if action.expected_content_change() and not waited:
             action.wait_for_frameworks(self)
 
-        if action.delay_for_user_to_see():
-            sleep(5)
+        if action.delay_for_user_to_see() > 0:
+            sleep(action.delay_for_user_to_see())
 
         return success
 
