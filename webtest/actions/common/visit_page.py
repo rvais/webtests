@@ -14,21 +14,12 @@ from webtest.components.pagemodel.model import PageModel
 
 
 class VisitPage(UserAction):
-
-    def expected_redirection(self) -> bool:
-        return False
-
-    def expected_content_change(self) -> bool:
-        return True
-
-    def delay_for_user_to_see(self) -> bool:
-        return False
-
+    def __init__(self, redirection: bool=True, page_change: bool=True, delay: int=0):
+        super(VisitPage, self).__init__(redirection, page_change, delay)
 
 class VisitPageByName(VisitPage):
-
-    def __init__(self, page_name: str= ''):
-        super(VisitPageByName, self).__init__()
+    def __init__(self, page_name: str= '', *args, **kwargs):
+        super(VisitPageByName, self).__init__(*args, **kwargs)
         self._page_name = page_name
 
     def perform_self(self, agent: 'WebAgent') -> bool:
@@ -47,8 +38,8 @@ class VisitPageByName(VisitPage):
 
 class VisitPageByUrl(VisitPage):
 
-    def __init__(self, protocol: str=HTTP_CONST.PROTOCOL_HTTP, host: str="localhost", port: int=0, url: str="/"):
-        super(VisitPageByUrl, self).__init__()
+    def __init__(self, protocol: str=HTTP_CONST.PROTOCOL_HTTP, host: str="localhost", port: int=0, url: str="/", *args, **kwargs):
+        super(VisitPageByUrl, self).__init__(*args, **kwargs)
         self._protocol = protocol
         self._host = host
         self._port = port
@@ -71,8 +62,8 @@ class VisitPageByUrl(VisitPage):
 
 class VisitPageWithTemplate(VisitPage):
 
-    def __init__(self, template: PageModel):
-        super(VisitPageWithTemplate, self).__init__()
+    def __init__(self, template: PageModel, *args, **kwargs):
+        super(VisitPageWithTemplate, self).__init__(*args, **kwargs)
         self._model = template
 
     def perform_self(self, agent: 'WebAgent') -> bool:

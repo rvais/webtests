@@ -9,8 +9,8 @@ from webtest.webagent import WebAgent
 
 class OpenBrowser(UserAction):
 
-    def __init__(self, browser_name: str=''):
-        super(OpenBrowser, self).__init__()
+    def __init__(self, browser_name: str='', *args, **kwargs):
+        super(OpenBrowser, self).__init__(*args, **kwargs)
         self._browser_name = browser_name
 
     def perform_self(self, agent: 'WebAgent') -> bool:
@@ -20,6 +20,3 @@ class OpenBrowser(UserAction):
         else:
             agent.start_up_browser()
         return True
-
-    def delay_for_user_to_see(self) -> bool:
-        return False

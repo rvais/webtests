@@ -15,13 +15,13 @@ from webtest.components.pagemodel.element import Element
 from webtest.common.scripts.frameworks import angular_loaded, render_cycle
 
 class UserAction(object):
-    def __init__(self):
+    def __init__(self, redirection: bool=False, page_change: bool=False, delay: int=0):
         self._class_name = str(self.__class__.__name__)
         self._logger = get_logger(self._class_name) # type: logging.Logger
 
-        self._redirection = False
-        self._change = False
-        self._delay_for_user = True
+        self._redirection = redirection
+        self._change = page_change
+        self._delay_for_user = delay
 
     def perform_self(self, agent: 'WebAgent') -> bool:
         self._logger.info("Performing generic user action.")
@@ -41,7 +41,7 @@ class UserAction(object):
     def expected_content_change(self) -> bool:
         return self._change
 
-    def delay_for_user_to_see(self) -> bool:
+    def delay_for_user_to_see(self) -> int:
         return self._delay_for_user
 
     def set_expected_redirection(self, redirection: bool):
@@ -50,8 +50,8 @@ class UserAction(object):
     def set_expected_content_change(self, change: bool):
         self._change = change
 
-    def set_delay_active(self, do_delay: bool):
-        self._delay_for_user = do_delay
+    def set_delay_for_users(self, delay: int):
+        self._delay_for_user = delay
 
     def wait_for_frameworks(self, agent: 'WebAgent') -> None:
         page = agent.get_current_page()
@@ -71,7 +71,7 @@ class UserAction(object):
                 if subcomponent is None:
                     break
 
-            component = subcomponent
+                component = subcomponent
 
         return component
 
@@ -174,3 +174,19 @@ class FindElement(UserAction):
         except Exception as ex:
             self.action_failure(ex)
             return None
+
+# piece of code form debugging _get_link method, remove it is no longer needed
+#        link_list = node.get_elements_by_tag_name("a")
+
+#        found = None
+#        logger = get_logger()
+#        for link in link_list: # type: Element
+#            logger.info("link")
+#            try:
+#                link.text.index(text)
+#                found = link
+#            except ValueError:
+#                pass
+#
+#        return found
+#

@@ -11,8 +11,8 @@ from webtest.components.pagemodel.element import Element
 from webtest.components.pagemodel.component import Component
 
 class ClickOnComponent(UserAction):
-    def __init__(self, component_name: str=Page.ROOT_COMPONENT_NAME, *args):
-        super(ClickOnComponent, self).__init__()
+    def __init__(self, component_name: str=Page.ROOT_COMPONENT_NAME, *args, **kwargs):
+        super(ClickOnComponent, self).__init__(**kwargs)
 
         self._component = component_name
         self._subcomponents = list()
@@ -30,7 +30,6 @@ class ClickOnComponent(UserAction):
                 self.action_failure(msg="Component is not visible.")
                 return False
 
-
         except Exception as ex:
             self.action_failure()
             return False
@@ -38,12 +37,11 @@ class ClickOnComponent(UserAction):
 
 
 class ClickOnLink(UserAction):
-    def __init__(self, link_text:str, component_name: str=Page.ROOT_COMPONENT_NAME, *args):
-        super(ClickOnLink, self).__init__()
+    def __init__(self, link_text:str, component_name: str=Page.ROOT_COMPONENT_NAME, *args, **kwargs):
+        super(ClickOnLink, self).__init__(**kwargs)
 
-        self._redirection = True
-        self._change = True
-        self._delay_for_user = True
+        self._redirection = True if 'redirection' not in kwargs else self._redirection
+        self._change = True if 'page_change' not in kwargs else self._change
 
         self._component = component_name
         self._subcomponents = list()
@@ -58,7 +56,7 @@ class ClickOnLink(UserAction):
             link = UserAction._get_link(page, self._link_text, self._component, self._subcomponents) # type: Element
             if link.visible:
                 self._logger.info("Clicking on link with text '{}'.".format(self._link_text))
-                return link.click()
+                return link.click(link)
             else:
                 self.action_failure(msg="Element is not visible.")
                 return False
@@ -70,8 +68,8 @@ class ClickOnLink(UserAction):
 
 
 class ClickOnElement(UserAction):
-    def __init__(self, selector: str, value: str, component_name: str=Page.ROOT_COMPONENT_NAME, *args):
-        super(ClickOnElement, self).__init__()
+    def __init__(self, selector: str, value: str, component_name: str=Page.ROOT_COMPONENT_NAME, *args, **kwargs):
+        super(ClickOnElement, self).__init__(**kwargs)
 
         self._component = component_name
         self._subcomponents = list()
@@ -89,7 +87,7 @@ class ClickOnElement(UserAction):
             if element.visible:
                 self._logger.info("Clicking on element searched by selector '{}' "
                                   "with value '{}' .".format(self._selector, self._selector_value))
-                return element.click()
+                return element.click(element)
             else:
                 self.action_failure(msg="Element is not visible.")
                 return False

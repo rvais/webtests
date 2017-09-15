@@ -9,13 +9,10 @@ from webtest.webagent import WebAgent
 
 class CloseBrowser(UserAction):
 
-    def __init__(self):
-        super(CloseBrowser, self).__init__()
+    def __init__(self, *args, **kwargs):
+        super(CloseBrowser, self).__init__(*args, **kwargs)
 
     def perform_self(self, agent: 'WebAgent') -> bool:
         self._logger.info("Closing browser.")
         agent.close_browser()
         return True
-
-    def delay_for_user_to_see(self) -> bool:
-        return False

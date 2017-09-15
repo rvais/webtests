@@ -9,8 +9,8 @@ from webtest.components.pagemodel.page import Page
 from webtest.components.pagemodel.element import Element
 
 class FillForm(UserAction):
-    def __init__(self, data: dict, component_name: str=Page.ROOT_COMPONENT_NAME, *args):
-        super(FillForm, self).__init__()
+    def __init__(self, data: dict, component_name: str=Page.ROOT_COMPONENT_NAME, *args, **kwargs):
+        super(FillForm, self).__init__(**kwargs)
 
         self._data_dictionary = data
         self._component = component_name
@@ -32,8 +32,8 @@ class FillForm(UserAction):
 
 
 class FillSpecificInputField(UserAction):
-    def __init__(self, input_type: str, value: str, component_name: str = Page.ROOT_COMPONENT_NAME, *args):
-        super(FillSpecificInputField, self).__init__()
+    def __init__(self, input_type: str, value: str, component_name: str = Page.ROOT_COMPONENT_NAME, *args, **kwargs):
+        super(FillSpecificInputField, self).__init__(**kwargs)
 
         self._input_type = input_type
         self._value = value
