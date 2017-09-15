@@ -5,6 +5,7 @@
 #
 
 from webtest.actions.user_action import UserAction
+from webtest.actions.mouse_action import MouseAction
 from webtest.webagent import WebAgent
 from webtest.components.pagemodel.page import Page
 from webtest.components.pagemodel.element import Element
@@ -52,7 +53,7 @@ class ClickOnLink(UserAction):
 
     def perform_self(self, agent: 'WebAgent') -> bool:
         page = agent.get_current_page()  # type: Page
-        try:
+        if True: #try:
             link = UserAction._get_link(page, self._link_text, self._component, self._subcomponents) # type: Element
             if link.visible:
                 self._logger.info("Clicking on link with text '{}'.".format(self._link_text))
@@ -61,7 +62,8 @@ class ClickOnLink(UserAction):
                 self.action_failure(msg="Element is not visible.")
                 return False
 
-        except Exception as ex:
+        else : #except Exception as ex:
+            ex = None
             self.action_failure(ex)
             return False
 
@@ -91,6 +93,36 @@ class ClickOnElement(UserAction):
             else:
                 self.action_failure(msg="Element is not visible.")
                 return False
+
+        except Exception as ex:
+            self.action_failure(ex)
+            return False
+
+class MouseClick(MouseAction):
+    def __init__(self):
+        super(MouseClick, self).__init__()
+
+    def perform_self(self, agent: 'WebAgent'):
+        self._logger.info("Performing mouse click on current position.")
+        try:
+            mouse = agent.get_mouse()
+            mouse.click()
+            return True
+
+        except Exception as ex:
+            self.action_failure(ex)
+            return False
+
+class MouseDoubleClick(MouseAction):
+    def __init__(self):
+        super(MouseDoubleClick, self).__init__()
+
+    def perform_self(self, agent: 'WebAgent'):
+        self._logger.info("Performing mouse double-click on current position.")
+        try:
+            mouse = agent.get_mouse()
+            mouse.double_click()
+            return True
 
         except Exception as ex:
             self.action_failure(ex)

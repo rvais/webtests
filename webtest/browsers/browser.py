@@ -6,6 +6,7 @@
 
 from selenium.webdriver.remote.webdriver import WebDriver
 from webtest.browsers.mockdriver import MockDriver
+from webtest.browsers.devices.mouse import Mouse
 from webtest.components.pagemodel.model import PageModel
 from webtest.components.pagemodel.page import Page
 from webtest.common.wait_for import Wait
@@ -18,15 +19,16 @@ class Browser(object):
         self._logger = get_logger(class_name)
 
         self._selenium = None
-        self._driver = MockDriver() # type:WebDriver
+        self._driver = MockDriver()     # type: WebDriver
         self._driver_path = ''
         self._browser_path = ''
         self._private_mode = False
         self._maximized = True
         self._args = list()
         self._excludes = list()
-        self._current_page = None
+        self._current_page = None       # type: Page
         self._driver_running = False
+        self._mouse = None              # type: Mouse
 
     @property
     def name(self) -> str:
@@ -142,3 +144,9 @@ class Browser(object):
             result = self._driver.execute_script(script)
 
         return result
+
+    def get_mouse(self) -> Mouse or None:
+        if self._mouse is None and self.is_running:
+            self._mouse = Mouse(self._driver)
+
+        return self._mouse

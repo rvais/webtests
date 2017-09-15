@@ -20,6 +20,7 @@ from time import sleep
 # from webtest.actions.user_action import UserAction
 # from webtest.browsers.browser import Browser
 from webtest.browsers.chrome import Chrome
+from webtest.browsers.devices.mouse import Mouse
 from webtest.common.logger import get_logger
 from webtest.common.http import Constants as HTTP_CONST, relax_url, cut_host_from_url
 from webtest.components.models.google.google import GoogleMainPage
@@ -213,6 +214,12 @@ class WebAgent(object):
         return success
 
     def perform_action_get(self, action: 'UserAction') -> object or None:
+        return action.perform_self(self)
+
+    def get_mouse(self) -> Mouse or None:
+        return self._browser.get_mouse()
+
+    def perform_mouse_action(self, action: 'MouseAction') -> bool:
         return action.perform_self(self)
 
 
