@@ -37,13 +37,20 @@ def main():
     success = success and agent.perform_action(OpenBrowser())
     success = success and agent.perform_action(VisitPageByName("HawtioLoginPageNS"))
     success = success and agent.perform_action(FillForm(login, 'main', 'login-form'))
-    click = ClickOnComponent('main', 'login-form', 'send-button')
-    click.set_expected_redirection(True)
-    success = success and agent.perform_action(click)
-    click = ClickOnComponent('main', 'navigation', 'preferences')
-    success = success and agent.perform_action(click)
-    click = ClickOnLink("Log out", 'main', 'navigation', 'preferences')
 
+    click = ClickOnComponent('main', 'login-form', 'send-button', redirection=True)
+    success = success and agent.perform_action(click)
+
+    click = ClickOnComponent('main', 'left-column', 'expand-tree')
+    success = success and agent.perform_action(click)
+
+    click = ClickOnComponent('main', 'left-column', 'collapse-tree')
+    success = success and agent.perform_action(click)
+
+    click = ClickOnLink('admin', 'body', 'header', 'header-panel', redirection=False, page_change=False)
+    success = success and agent.perform_action(click)
+
+    click = ClickOnLink("Log out", 'body', 'header', 'header-panel')#, redirection=False, page_change=False)
     success = success and agent.perform_action(click)
     success = success and agent.perform_action(CloseBrowser())
 
