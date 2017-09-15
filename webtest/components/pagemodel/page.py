@@ -6,6 +6,8 @@
 
 # from time import sleep
 #from webtest.browsers.browser import Browser
+from time import sleep
+
 from webtest.components.pagemodel.model import PageModel
 from webtest.components.pagemodel.element import Element
 from webtest.components.pagemodel.component import Component, RootComponent
@@ -124,7 +126,28 @@ class Page(object):
         browser = self._browser # type: Browser
         return browser.inject_script(browser, script, async)
 
+    def construct_page(self, attempt_count = 3, wait_on_failure=1):
+        success = False
+        while attempt_count > 0 and not success:
+            attempt_count = attempt_count - 1
+            self._root = None
+            self._root_component = None
+            try:
+                root_component = self.get_component(Page.ROOT_COMPONENT_NAME)
 
+                # this loop makes sure that all components have root element set correctly
+                for name, component in self._model.items():
+                    root_component.add_subcomponent(component)
+                    root_component.get_subcomponent(name)
+
+                success = True
+
+            except Exception as ex:
+                self._logger.warning("Unsuccessful attempt to construct the page representation.")
+                self._logger.warning(ex)
+                sleep(wait_on_failure)
+
+        return success
 
 
 
