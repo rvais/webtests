@@ -22,7 +22,7 @@ class Element(object):
         self._logger = get_logger(class_name)
 
         # setup default values
-        self._elem = webelem
+        self._elem = webelem    # type: WebElement
         self._id = "#id"
         self._classname = ""
         self._tag_name = "elem"
@@ -168,28 +168,28 @@ class Element(object):
         return Element(raw_node)
 
     def get_element_by_id(self, id) -> 'Element' or None:
-        return self.get_element(selector=Selector.ID, value=id)
+        return self.get_element(self, selector=Selector.ID, value=id)
 
     def get_element_by_tag_name(self, name) -> 'Element' or None:
-        return self.get_element(selector=Selector.TAG_NAME, value=name)
+        return self.get_element(self, selector=Selector.TAG_NAME, value=name)
 
     def get_element_by_class_name(self, class_name) -> 'Element' or None:
-        return self.get_element(selector=Selector.CLASS_NAME, value=class_name)
+        return self.get_element(self, selector=Selector.CLASS_NAME, value=class_name)
 
     def get_element_by_name_property(self, name) -> 'Element' or None:
-        return self.get_element(selector=Selector.NAME_PROPERTY, value=name)
+        return self.get_element(self, selector=Selector.NAME_PROPERTY, value=name)
 
     def get_link_by_text(self, link_text) -> 'Element' or None:
-        return self.get_element(selector=Selector.LINK_TEXT, value=link_text)
+        return self.get_element(self, selector=Selector.LINK_TEXT, value=link_text)
 
     def get_link_by_partial_text(self, link_text) -> 'Element' or None:
-        return self.get_element(selector=Selector.PARTIAL_LINK_TEXT, value=link_text)
+        return self.get_element(self, selector=Selector.PARTIAL_LINK_TEXT, value=link_text)
 
     def get_element_by_xpath(self, xpath) -> 'Element' or None:
-        return self.get_element(selector=Selector.XPATH, value=xpath)
+        return self.get_element(self, selector=Selector.XPATH, value=xpath)
 
     def get_element_by_css_selector(self, css_selector) -> 'Element' or None:
-        return self.get_element(selector=Selector.CSS, value=css_selector)
+        return self.get_element(self, selector=Selector.CSS, value=css_selector)
 
     def _get_neighbour(
             self,
@@ -285,25 +285,25 @@ class Element(object):
         return element_list
 
     def get_elements_by_tag_name(self, name) -> list:
-        return self.get_multiple_elements(selector=Selector.TAG_NAME, value=name)
+        return self.get_multiple_elements(self, selector=Selector.TAG_NAME, value=name)
 
     def get_elements_by_class_name(self, class_name) -> list:
-        return self.get_multiple_elements(selector=Selector.CLASS_NAME, value=class_name)
+        return self.get_multiple_elements(self, selector=Selector.CLASS_NAME, value=class_name)
 
     def get_elements_by_name_property(self, name) -> list:
-        return self.get_multiple_elements(selector=Selector.NAME_PROPERTY, value=name)
+        return self.get_multiple_elements(self, selector=Selector.NAME_PROPERTY, value=name)
 
     def get_links_by_text(self, link_text) -> list:
-        return self.get_multiple_elements(selector=Selector.LINK_TEXT, value=link_text)
+        return self.get_multiple_elements(self, selector=Selector.LINK_TEXT, value=link_text)
 
     def get_links_by_partial_text(self, link_text) -> list:
-        return self.get_multiple_elements(selector=Selector.PARTIAL_LINK_TEXT, value=link_text)
+        return self.get_multiple_elements(self, selector=Selector.PARTIAL_LINK_TEXT, value=link_text)
 
     def get_elements_by_xpath(self, xpath) -> list:
-        return self.get_multiple_elements(selector=Selector.XPATH, value=xpath)
+        return self.get_multiple_elements(self, selector=Selector.XPATH, value=xpath)
 
     def get_elements_by_css_selector(self, css_selector) -> list:
-        return self.get_multiple_elements(selector=Selector.CSS, value=css_selector)
+        return self.get_multiple_elements(self, selector=Selector.CSS, value=css_selector)
 
     def _get_multiple_neighbours(
             self,
