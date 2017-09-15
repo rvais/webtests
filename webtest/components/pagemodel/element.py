@@ -154,7 +154,8 @@ class Element(object):
     def get_css_property_value(self, property_name: str) -> str:
         return self._elem.value_of_css_property(property_name)
 
-
+    def get_inner_node(self):
+        return self._elem;
 
     # find specific single element node passing given criteria ________________
     @Wait
