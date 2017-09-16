@@ -52,6 +52,11 @@ render_cycle = """
 """
 
 angular_loaded = """
-    callback = arguments[arguments.length - 1];
-    angular.element('html').injector().get('$browser').notifyWhenNoOutstandingRequests(callback);
+    callback = arguments[arguments.length - 1]; 
+    if (typeof angular !== 'undefined') {                                                                                                                                                                          
+        angular.element('html').injector().get('$browser').notifyWhenNoOutstandingRequests(callback);
+    }
+    else {
+        callback(true);
+    }
 """
