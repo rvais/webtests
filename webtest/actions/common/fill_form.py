@@ -50,7 +50,9 @@ class FillSpecificInputField(UserAction):
                 node = component.get_element_node() # type: Element
                 if node.tag_name != 'input':
                     nodes = node.get_all_descendants('input', filters=['@type={}'.format(self._input_type),])
-                    return nodes[0].fill_input([self._input_type, self._value, None])
+                    return nodes[0].fill_input(node, [self._input_type, self._value, None])
+                else:
+                    return node.fill_input(node, [self._input_type, self._value, None])
 
             except Exception as ex:
                 self.action_failure(ex)
