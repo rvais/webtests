@@ -11,7 +11,7 @@ from webtest.common.http import Constants
 
 class HawtioArtemisPage(PageModel):
     def __init__(self, *arg, **kw):
-        super(HawtioArtemisPage, self).__init__(protocol=Constants.PROTOCOL_HTTP, host="rhel7", port=8161, url="console/artemis", *arg, **kw)
+        super(HawtioArtemisPage, self).__init__(protocol=Constants.PROTOCOL_HTTP, host="rhel7", port=8161, url="hawtio/artemis", *arg, **kw)
 
     def _create_template(self):
         # ( name: str, selector_type: Selector.*, selector_value: str, parent: str=None, construction_exclude=False )
@@ -23,7 +23,7 @@ class HawtioArtemisPage(PageModel):
             ('left-column', Selector.XPATH, '//div/div[1]', 'main'),
             ('right-column', Selector.XPATH, '//div/div[2]', 'main'),
             ('content', Selector.ID, 'properties', 'right-column'),
-            ('modal-window', Selector.ID, '/html/body/div[4]'),
+            ('modal-window', Selector.XPATH, '/html/body/div[4]', 'body', True),
 
             # main navigation
             ('header-panel', Selector.XPATH, '//div[1]/div/div[2]/ul', 'header'),
