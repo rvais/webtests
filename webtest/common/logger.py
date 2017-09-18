@@ -14,7 +14,17 @@ PATH_TO_LOGS = './logs'
 TRACE = 5
 DUMP = 1
 
-DEFAULT_LOG_LEVEL = logging.INFO  # CRITICAL | ERROR | WARNING | INFO | DEBUG | TRACE | NOTSET
+class LogLevel(object):
+    CRITICAL = logging.CRITICAL
+    ERROR = logging.ERROR
+    WARNING = logging.WARNING
+    INFO = logging.INFO
+    DEBUG = logging.DEBUG
+    TRACE = TRACE
+    DUMP = DUMP
+    NOTSET = logging.NOTSET
+
+DEFAULT_LOG_LEVEL = LogLevel.INFO  # CRITICAL | ERROR | WARNING | INFO | DEBUG | TRACE | DUMP | NOTSET
 
 def get_logger(name="logger", level=None, sfx=None):
     if not isinstance(logging.getLoggerClass(), CustomLogger):
