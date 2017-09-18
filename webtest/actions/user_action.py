@@ -88,7 +88,7 @@ class UserAction(object):
             return component
 
         node = component.get_element_node()
-        return node.get_element(selector, value)
+        return node.get_element(node, selector, value)
 
     @staticmethod
     def _get_link(
