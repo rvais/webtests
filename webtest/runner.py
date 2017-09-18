@@ -13,16 +13,19 @@ from webtest.actions.common.click import ClickOnComponent, ClickOnLink, ClickOnE
 from webtest.actions.common.fill_form import FillForm
 from webtest.components.models.hawtio.login_page import HawtioLoginPageNS
 from webtest.components.models.hawtio.attributes_page import HawtioArtemisPage
+from webtest.components.models.hawtio.welcome_page import HawtioWelcomePage
 from webtest.tests.commons import Performer
 
 # main ________________________________________________________________________
 def main():
 
     login_page = HawtioLoginPageNS()
+    welcome_page = HawtioWelcomePage()
     artemis_page = HawtioArtemisPage()
     models = [
         login_page,
         login_page.derive_template(name="HawtioAlternativeLogin", url="console/login"),
+        welcome_page,
         artemis_page,
         artemis_page.derive_template(name="HawtioArtemisJMXattributes", url="console/jmx/attributes"),
     ]
@@ -40,6 +43,7 @@ def main():
         VisitPageByName("HawtioLoginPageNS"),
         FillForm(login, 'main', 'login-form'),
         ClickOnComponent('main', 'login-form', 'send-button', redirection=True),
+        ClickOnLink('Artemis', 'body', 'header', 'main-navigation', redirection=True),
         ClickOnComponent('main', 'left-column', 'expand-tree'),
         ClickOnComponent('main', 'left-column', 'collapse-tree'),
         ClickOnLink('admin', 'body', 'header', 'header-panel', redirection=False, page_change=False),
