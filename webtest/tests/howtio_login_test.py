@@ -6,16 +6,16 @@
 from time import sleep
 
 import pytest
-from webtest.components.models.hawtio.LoginPage import HawtioLoginPageNS
+from webtest.components.models.hawtio.login_page import HawtioLoginPageNS
 from webtest.components.pagemodel.page import Page
 from webtest.common.logger import get_logger
 
 page_model = HawtioLoginPageNS()
 
-class TestHawtioLoginNS(object):
+class NotTestHawtioLoginNS(object):
 
     @pytest.mark.usefixtures("page_to_test")
-    def test_one(self, page_to_test: Page):
+    def nope_test_one(self, page_to_test: Page):
         logger = get_logger("HawtioTest")
         logger.info("Test started ...")
 

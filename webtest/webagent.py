@@ -23,7 +23,7 @@ from webtest.browsers.chrome import Chrome
 from webtest.common.logger import get_logger
 from webtest.common.http import Constants as HTTP_CONST, relax_url, cut_host_from_url
 from webtest.components.models.google.google import GoogleMainPage
-from webtest.components.models.hawtio.LoginPage import HawtioLoginPageNS
+from webtest.components.models.hawtio.login_page import HawtioLoginPageNS
 from webtest.components.pagemodel import model
 from webtest.components.pagemodel.model import PageModel
 from webtest.components.pagemodel.page import Page

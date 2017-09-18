@@ -11,7 +11,7 @@ from webtest.actions.common.visit_page import VisitPageByName
 from webtest.actions.common.close_browser import CloseBrowser
 from webtest.actions.common.click import ClickOnComponent, ClickOnLink, ClickOnElement
 from webtest.actions.common.fill_form import FillForm
-from webtest.components.models.hawtio.LoginPage import HawtioLoginPageNS
+from webtest.components.models.hawtio.login_page import HawtioLoginPageNS
 from webtest.components.models.hawtio.attributes_page import HawtioArtemisPage
 from webtest.tests.commons import Performer
 
