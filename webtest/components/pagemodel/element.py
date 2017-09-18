@@ -161,7 +161,7 @@ class Element(object):
     @Wait
     def get_element(self, selector: str, value: str) -> 'Element' or None:
         log_message = "Searching for element by '{selector}', with '{value}'."
-        self._logger.trace(log_message.format(selector=selector, value=value))
+        self._logger.debug(log_message.format(selector=selector, value=value))
         raw_node = self._elem.find_element(selector, value)
         if not  isinstance(raw_node, WebElement):
             return None
