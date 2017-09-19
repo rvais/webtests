@@ -166,7 +166,8 @@ class WebAgent(object):
             # It is not necessary to wait for frameworks twice #1
             waited = True
 
-            # there is minimal time required for browser to even
+            # there is minimal time required for browser to even change
+            # urls and propagate them to selenium
             sleep(1)
 
             # remove anchors and HTTP GET method variables
