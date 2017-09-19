@@ -24,10 +24,10 @@ def main():
     artemis_page = HawtioArtemisPage()
     models = [
         login_page,
-        login_page.derive_template(name="HawtioAlternativeLogin", url="console/login"),
+        login_page.derive_template(name="HawtioAlternativeLogin", url="hawtio/login"),
         welcome_page,
         artemis_page,
-        artemis_page.derive_template(name="HawtioArtemisJMXattributes", url="console/jmx/attributes"),
+        artemis_page.derive_template(name="HawtioArtemisJMXattributes", url="hawtio/jmx/attributes"),
     ]
 
     agent = WebAgent(models)
@@ -54,9 +54,6 @@ def main():
 
     performer = Performer()
     performer.perform_actions(agent, steps)
-
-
-
 
 if __name__ == '__main__':
     main()
