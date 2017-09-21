@@ -24,10 +24,10 @@ def main():
     artemis_page = HawtioArtemisPage()
     models = [
         login_page,
-        login_page.derive_template(name="HawtioAlternativeLogin", url="hawtio/login"),
+        login_page.derive_template(name="HawtioAlternativeLogin", uri="hawtio/login"),
         welcome_page,
         artemis_page,
-        artemis_page.derive_template(name="HawtioArtemisJMXattributes", url="hawtio/jmx/attributes"),
+        artemis_page.derive_template(name="HawtioArtemisJMXattributes", uri="hawtio/jmx/attributes"),
     ]
 
     agent = WebAgent(models)

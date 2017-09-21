@@ -9,6 +9,7 @@ from webtest.browsers.mockdriver import MockDriver
 from webtest.components.pagemodel.model import PageModel
 from webtest.components.pagemodel.page import Page
 from webtest.common.wait_for import Wait
+from webtest.common.http import URL
 from webtest.common.logger import get_logger
 
 class Browser(object):
@@ -114,9 +115,9 @@ class Browser(object):
         elif model is not None:
             self._logger.debug("Browser has Page Model available.")
             if not update:
-                self._driver.get(model.url)
+                self._driver.get(model.url.string(True, True))
 
-            if not self.current_url.startswith(model.url):
+            if not self.current_url.is_similar_to(model.url):
                 self._logger.warning("Current browser's url and template's url do not match.")
                 msg = "browser's url:\n\t\t'{}'\n\ttemplate's url:\n\t\t'{}'"
                 self._logger.warning(msg.format(self.current_url, model.url))
@@ -130,8 +131,8 @@ class Browser(object):
         return self._current_page
 
     @property
-    def current_url(self) -> str:
-        return self.driver.current_url
+    def current_url(self) -> URL:
+        return URL.parse(self.driver.current_url)
 
     @Wait
     def inject_script(self, script: str, async: bool=True) -> object:

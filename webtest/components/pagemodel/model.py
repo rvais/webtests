@@ -6,13 +6,13 @@
 
 from copy import copy
 from webtest.common.http import Constants as HTTP_CONST
-from webtest.common.http import format_url
+from webtest.common.http import URL
 from webtest.components.pagemodel.component import Component
 from webtest.common.logger import get_logger
 
 class PageModel(dict):
 
-    def __init__(self, protocol: str=HTTP_CONST.PROTOCOL_HTTP, host: str="localhost", port: int=0, url: str="/", *arg, **kwargs):
+    def __init__(self, protocol: str=HTTP_CONST.PROTOCOL_HTTP, host: str="localhost", port: int=0, uri: str="/", *arg, **kwargs):
         super(PageModel, self).__init__(*arg, **kwargs)
 
         class_name = str(self.__class__.__name__)
@@ -20,10 +20,7 @@ class PageModel(dict):
 
         self._name = class_name
 
-        self._protocol = protocol
-        self._host = host
-        self._port = port
-        self._url = url
+        self._url = URL(protocol, host, port, uri)
         self._component_list = list()
 
         self._logger.info("Creating '{}' page model with '{}' url address.".format(class_name, self.url))
@@ -77,8 +74,16 @@ class PageModel(dict):
         return self._name
 
     @property
+    def url_complete(self) -> str:
+        return self._url.format()
+
+    @property
+    def url_short(self) -> str:
+        return self._url.format()
+
+    @property
     def url(self):
-        return format_url(self._protocol, self._host, self._port, self._url)
+        return self._url
 
     def get_component_list(self):
         return copy(self._component_list)
@@ -87,16 +92,16 @@ class PageModel(dict):
             self,
             name: str,
             template: list=list(),
-            protocol: str or None=None,
+            scheme: str or None=None,
             host: str or None=None,
             port: int or None=None,
-            url: str or None=None,
+            uri: str or None=None,
     ) -> 'PageModel':
-        protocol = protocol if protocol is not None else self._protocol
-        host = host if host is not None else self._host
-        port = port if port is not None else self._port
-        url = url if url is not None else self._url
-        new_model = PageModel(protocol, host, port, url)
+        scheme = scheme if scheme is not None else self._url.scheme
+        host = host if host is not None else self._url.host_name
+        port = port if port is not None else self._url.port
+        uri = uri if uri is not None else self._url.uri
+        new_model = PageModel(scheme, host, port, uri)
 
         new_model.__set_name(name)
         new_template = self._create_template()

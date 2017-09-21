@@ -22,6 +22,7 @@ from time import sleep
 from webtest.browsers.chrome import Chrome
 from webtest.common.logger import get_logger
 from webtest.common.http import Constants as HTTP_CONST, relax_url, cut_host_from_url
+from webtest.common.http import URL
 from webtest.components.models.google.google import GoogleMainPage
 from webtest.components.models.hawtio.login_page import HawtioLoginPageNS
 from webtest.components.pagemodel import model
@@ -62,7 +63,7 @@ class WebAgent(object):
         self._templates_by_name = dict()
 
         for template in template_list: # type: PageModel
-            self._templates_by_url[template.url] = template
+            self._templates_by_url[template.url.string()] = template
             self._templates_by_name[template.name] = template
 
     def start_up_browser(self, browser: str =BROWSER_CHROME) -> None:
@@ -172,11 +173,11 @@ class WebAgent(object):
 
             # remove anchors and HTTP GET method variables
             # otherwise we would have to create infinite number of templates/models
-            url = relax_url(self._browser.current_url)
+            url = self._browser.current_url # type: URL
 
             # get template/model or derive it by cloning current one
-            if url in self._templates_by_url.keys():
-                model = self._templates_by_url[url]
+            if url.string() in self._templates_by_url.keys():
+                model = self._templates_by_url[url.string()]
             else:
                 self._logger.debug(str(self._templates_by_url.keys()))
                 self._logger.debug(url)
@@ -193,7 +194,7 @@ class WebAgent(object):
                 # new name incorporates the hash
                 name = "{}-{}".format(current_model.name, h.hexdigest())
 
-                model = current_model.derive_template(name, url=cut_host_from_url(url))
+                model = current_model.derive_template(name, uri=url.uri)
                 self._templates_by_url[url] = model
                 self._templates_by_name[name] = model
 

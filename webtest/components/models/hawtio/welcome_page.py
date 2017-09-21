@@ -11,7 +11,7 @@ from webtest.common.http import Constants
 
 class HawtioWelcomePage(PageModel):
     def __init__(self, *arg, **kw):
-        super(HawtioWelcomePage, self).__init__(protocol=Constants.PROTOCOL_HTTP, host="rhel7", port=8161, url="hawtio/welcome", *arg, **kw)
+        super(HawtioWelcomePage, self).__init__(protocol=Constants.PROTOCOL_HTTP, host="rhel7", port=8161, uri="hawtio/welcome", *arg, **kw)
 
     def _create_template(self):
         # ( name: str, selector_type: Selector.*, selector_value: str, parent: str=None, construction_exclude=False )
