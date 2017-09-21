@@ -538,7 +538,7 @@ class Element(object):
 
         element_select = Select(self._elem)
         for opt in options:
-            element_select.select_by_value(opt)
+            element_select.select_by_visible_text(opt)
 
         return True
 
