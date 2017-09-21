@@ -71,7 +71,7 @@ class URL(object):
         self._port = port
         self._uri = uri
         self._query_string = query
-        self._query = urlparse.parse_qs(query, staticmethod=True)
+        self._query = urlparse.parse_qs(query) #, strict_parsing=True)
         self._fragment = fragment
 
     def __eq__(self, other: 'URL'):
@@ -101,7 +101,7 @@ class URL(object):
         return URL(scheme, host, port, uri, query, fragment)
 
 
-    def format(self, with_query: bool=False, with_fragment: bool=False) -> str:
+    def string(self, with_query: bool=False, with_fragment: bool=False) -> str:
 
         if self._port <= 0:
             url_format = '{}://{}/{}'
@@ -111,7 +111,7 @@ class URL(object):
             full_url = url_format.format(self._scheme, self._host_name, self._port, self._uri)
 
         if  with_query:
-            full_url += "?" + self._query
+            full_url += "?" + self._query_string
 
         if  with_fragment:
             full_url += "#" + self._fragment
@@ -119,7 +119,7 @@ class URL(object):
         return full_url
 
     def __str__(self):
-        return self.format()
+        return self.string()
 
     @property
     def scheme(self) -> str:
