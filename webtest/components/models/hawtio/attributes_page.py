@@ -10,8 +10,8 @@ from webtest.common.http import Constants
 
 
 class HawtioArtemisPage(PageModel):
-    def __init__(self, *arg, **kw):
-        super(HawtioArtemisPage, self).__init__(protocol=Constants.PROTOCOL_HTTP, host="rhel7", port=8161, uri="hawtio/artemis", *arg, **kw)
+    def __init__(self, protocol=Constants.PROTOCOL_HTTP, host="rhel7", port=8161, uri="hawtio/artemis", *args, **kw):
+        super(HawtioArtemisPage, self).__init__(protocol, host, port, uri, *args, **kw)
 
     def _create_template(self):
         # ( name: str, selector_type: Selector.*, selector_value: str, parent: str=None, construction_exclude=False )
@@ -20,10 +20,11 @@ class HawtioArtemisPage(PageModel):
             ('body', Selector.XPATH, '/html/body'),
             ('header', Selector.ID, 'main-nav', 'body'), # Hawtio has confusing layout, this would be normaly called 'Header'
             ('main', Selector.ID, 'main'),
-            ('left-column', Selector.XPATH, '//div/div[1]', 'main'),
+            ('left-column', Selector.XPATH, '//div/div[1]', 'main'), # //*[@id="main"]/div/div[1]
             ('right-column', Selector.XPATH, '//div/div[2]', 'main'),
             ('content', Selector.ID, 'properties', 'right-column'),
             ('modal-window', Selector.XPATH, '/html/body/div[4]', 'body', True),
+            ('toast', Selector.ID, 'toast-container', 'body', True),
 
             # main navigation
             ('header-panel', Selector.XPATH, '//div[1]/div/div[2]/ul', 'header'),
@@ -31,11 +32,10 @@ class HawtioArtemisPage(PageModel):
 
             # additional navigation
             ('navigation-tabs', Selector.XPATH, '//div/div[2]/ng-include/ul', 'right-column'),
-            ('tree-menu', Selector.ID, 'tree-container', 'left-column'),
+            ('tree-menu', Selector.ID, 'tree-container', 'left-column'),  # //*[@id="main"]/div/div[1]/div/div[2]/div/div
             ('expand-tree', Selector.XPATH, '//div/div[1]/div/div[2]/i[1]', 'left-column'),
             ('collapse-tree', Selector.XPATH, '//div/div[1]/div/div[2]/i[2]', 'left-column'),
-            ('navigation-tabs-drop-down', Selector.XPATH, '//li[42]/a', 'navigation-tabs'),
-
+            ('navigation-tabs-drop-down', Selector.XPATH, '//li[39]/a', 'navigation-tabs'),  # //*[@id="main"]/div/div[2]/ng-include/ul/li[39]/a
         ]
         return template
 
