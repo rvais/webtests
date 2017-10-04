@@ -23,7 +23,6 @@ class HawtioArtemisPage(PageModel):
             ('left-column', Selector.XPATH, '//div/div[1]', 'main'), # //*[@id="main"]/div/div[1]
             ('right-column', Selector.XPATH, '//div/div[2]', 'main'),
             ('content', Selector.ID, 'properties', 'right-column'),
-            ('modal-window', Selector.XPATH, '/html/body/div[4]', 'body', True),
             ('toast', Selector.ID, 'toast-container', 'body', True),
 
             # main navigation
@@ -32,10 +31,18 @@ class HawtioArtemisPage(PageModel):
 
             # additional navigation
             ('navigation-tabs', Selector.XPATH, '//div/div[2]/ng-include/ul', 'right-column'),
-            ('tree-menu', Selector.ID, 'tree-container', 'left-column'),  # //*[@id="main"]/div/div[1]/div/div[2]/div/div
+#            ('tree-menu', Selector.ID, 'tree-container', 'left-column'),  # //*[@id="main"]/div/div[1]/div/div[2]/div/div
+            ('tree-menu', Selector.XPATH, '//div/div[2]/div/div', 'left-column'),  # //*[@id="main"]/div/div[1]/div/div[2]/div/div
             ('expand-tree', Selector.XPATH, '//div/div[1]/div/div[2]/i[1]', 'left-column'),
             ('collapse-tree', Selector.XPATH, '//div/div[1]/div/div[2]/i[2]', 'left-column'),
             ('navigation-tabs-drop-down', Selector.XPATH, '//li[39]/a', 'navigation-tabs'),  # //*[@id="main"]/div/div[2]/ng-include/ul/li[39]/a
+
+            # modal window with attribute values
+            ('modal-window', Selector.XPATH, '//html/body/div[4]', 'body', True),
+            ('attr-key', Selector.XPATH, '//form/div[2]/div[2]/fieldset/div[2]/div/input', 'modal-window', True),
+            ('attr-description', Selector.XPATH, '//form/div[2]/div[2]/fieldset/div[3]/div/div/textarea', 'modal-window', True),
+            ('attr-type', Selector.XPATH, '//form/div[2]/div[2]/fieldset/div[4]/div/input', 'modal-window', True),
+            ('attr-key', Selector.XPATH, '//form/div[2]/div[2]/fieldset/div[2]/div/input', 'modal-window', True),
         ]
         return template
 
@@ -49,3 +56,7 @@ class HawtioArtemisPage(PageModel):
 
     # dynatree-node dynatree-folder dynatree-lastsib dynatree-exp-el dynatree-expanded org-apache-activemq-artemis-addresses-folder dynatree-has-children dynatree-ico-ef
     # dynatree-node dynatree-folder dynatree-lastsib dynatree-exp-cl org-apache-activemq-artemis-"anycast" can-invoke dynatree-ico-cf dynatree-active
+
+    # //*[@id="main"]/div/div[1]/div/div[2]/div/div
+    # //*[@id="main"]/div/div[1]
+    # //*[@id="main"]/div/div[1]/div/div[2]/div/div
