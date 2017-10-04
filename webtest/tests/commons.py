@@ -10,6 +10,7 @@ from webtest.webagent import WebAgent
 from webtest.common.logger import get_logger
 from webtest.actions.common.open_browser import OpenBrowser
 from webtest.actions.common.close_browser import CloseBrowser
+from webtest.actions.user_action import UserAction
 
 @pytest.fixture(scope="module")
 def page_to_test(request):
@@ -79,5 +80,5 @@ def user_agent(request):
 class Performer(object):
 
     def perform_actions(self, agent: WebAgent, actions: list=list()):
-        for action in actions:
+        for action in actions: # type: UserAction
             assert agent.perform_action(action)
