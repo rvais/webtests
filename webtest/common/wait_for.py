@@ -29,8 +29,8 @@ class Wait(object) :
     __profile__ = {
         'exception-list' : [NoSuchElementException, StaleElementReferenceException],
         'polling-period' : 2,
-        'timeout' : 60,
-        'max_attempts' : 30,
+        'timeout' : 8,
+        'max_attempts' : 3,
     }
 
     def __init__(self, condition: callable): #, *args, **kwargs):
