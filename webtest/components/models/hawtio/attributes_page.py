@@ -37,6 +37,12 @@ class HawtioArtemisPage(PageModel):
             ('collapse-tree', Selector.XPATH, '//div/div[1]/div/div[2]/i[2]', 'left-column'),
             ('navigation-tabs-drop-down', Selector.XPATH, '//li[39]/a', 'navigation-tabs'),  # //*[@id="main"]/div/div[2]/ng-include/ul/li[39]/a
 
+            # filter field
+            ('results-filter', Selector.XPATH, '//*[@id="properties"]/div/div[1]/div/div/input', 'main'),
+
+            # content table
+            ('content-table', Selector.ID, 'attributesGrid', 'main'),
+
             # modal window with attribute values
             ('modal-window', Selector.XPATH, '//html/body/div[4]', 'body', True),
             ('attr-key', Selector.XPATH, '//form/div[2]/div[2]/fieldset/div[2]/div/input', 'modal-window', True),
