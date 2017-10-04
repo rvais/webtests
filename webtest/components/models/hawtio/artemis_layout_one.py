@@ -18,9 +18,10 @@ class HawtioArtemisLayoutOnePage(PageModel):
         template = [
             # main layout of a template
             ('body', Selector.XPATH, '/html/body'),
-            ('header', Selector.ID, 'main-nav', 'body'), # Hawtio has confusing layout, this would be normaly called 'Header'
+            # Hawtio has confusing layout, this would be normally called 'Header'
+            ('header', Selector.ID, 'main-nav', 'body'),
             ('main', Selector.ID, 'main'),
-            ('left-column', Selector.XPATH, '//div/div[1]', 'main'), # //*[@id="main"]/div/div[1]
+            ('left-column', Selector.XPATH, '//div/div[1]', 'main'),
             ('right-column', Selector.XPATH, '//div/div[2]', 'main'),
             ('content', Selector.ID, 'properties', 'right-column'),
             ('toast', Selector.ID, 'toast-container', 'body', True),
@@ -31,11 +32,10 @@ class HawtioArtemisLayoutOnePage(PageModel):
 
             # additional navigation
             ('navigation-tabs', Selector.XPATH, '//div/div[2]/ng-include/ul', 'right-column'),
-#            ('tree-menu', Selector.ID, 'tree-container', 'left-column'),  # //*[@id="main"]/div/div[1]/div/div[2]/div/div
-            ('tree-menu', Selector.XPATH, '//div/div[2]/div/div', 'left-column'),  # //*[@id="main"]/div/div[1]/div/div[2]/div/div
+            ('tree-menu', Selector.XPATH, '//div/div[2]/div/div', 'left-column'),
             ('expand-tree', Selector.XPATH, '//div/div[1]/div/div[2]/i[1]', 'left-column'),
             ('collapse-tree', Selector.XPATH, '//div/div[1]/div/div[2]/i[2]', 'left-column'),
-            ('navigation-tabs-drop-down', Selector.XPATH, '//li[39]/a', 'navigation-tabs'),  # //*[@id="main"]/div/div[2]/ng-include/ul/li[39]/a
+            ('navigation-tabs-drop-down', Selector.XPATH, '//li[39]/a', 'navigation-tabs'),
 
             # filter field
             ('results-filter', Selector.XPATH, '//*[@id="properties"]/div/div[1]/div/div/input', 'main'),
@@ -51,18 +51,3 @@ class HawtioArtemisLayoutOnePage(PageModel):
             ('attr-key', Selector.XPATH, '//form/div[2]/div[2]/fieldset/div[2]/div/input', 'modal-window', True),
         ]
         return template
-
-    def get_tree_address_xpath(self) -> str:
-        return ''
-
-    def get_tree_queue_xpath(self) -> str:
-        return ''
-
-    # <a href="#" class="dynatree-title">DLQ</a>
-
-    # dynatree-node dynatree-folder dynatree-lastsib dynatree-exp-el dynatree-expanded org-apache-activemq-artemis-addresses-folder dynatree-has-children dynatree-ico-ef
-    # dynatree-node dynatree-folder dynatree-lastsib dynatree-exp-cl org-apache-activemq-artemis-"anycast" can-invoke dynatree-ico-cf dynatree-active
-
-    # //*[@id="main"]/div/div[1]/div/div[2]/div/div
-    # //*[@id="main"]/div/div[1]
-    # //*[@id="main"]/div/div[1]/div/div[2]/div/div
