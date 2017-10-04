@@ -9,9 +9,9 @@ from webtest.common.selector import Selector
 from webtest.common.http import Constants
 
 
-class HawtioArtemisPage(PageModel):
+class HawtioArtemisLayoutOnePage(PageModel):
     def __init__(self, protocol=Constants.PROTOCOL_HTTP, host="rhel7", port=8161, uri="hawtio/artemis", *args, **kw):
-        super(HawtioArtemisPage, self).__init__(protocol, host, port, uri, *args, **kw)
+        super(HawtioArtemisLayoutOnePage, self).__init__(protocol, host, port, uri, *args, **kw)
 
     def _create_template(self):
         # ( name: str, selector_type: Selector.*, selector_value: str, parent: str=None, construction_exclude=False )
