@@ -8,6 +8,7 @@ import logging
 from time import sleep
 
 from webtest.common.logger import get_logger
+from webtest.common.selector import Selector
 from webtest.webagent import WebAgent
 from webtest.components.pagemodel.page import Page
 from webtest.components.pagemodel.component import Component
@@ -59,6 +60,9 @@ class UserAction(object):
         sleep(2)
         page.execute_script(angular_loaded)
 
+    @property
+    def name(self):
+        return self._class_name
 
     @staticmethod
     def _get_component(page: Page, component: str, subcomponents: list) -> Component or None:
@@ -103,6 +107,27 @@ class UserAction(object):
 
         node = component.get_element_node()
         return node.get_link_by_partial_text(text)
+
+
+    @staticmethod
+    def _get_link_first_visible(
+            page: Page,
+            text: str,
+            component: str=Page.ROOT_COMPONENT_NAME,
+            subcomponents: list=list()
+    ) -> Element or None:
+        component = UserAction._get_component(page, component, subcomponents)
+        if component is None:
+            return component
+
+        node = component.get_element_node()
+        link_list = node.get_multiple_elements(node, Selector.XPATH, '//*/a[contains(text(), "{}")]'.format(text))
+        for link in link_list: # type: Element
+            if link.visible:
+                return link
+
+        return None
+
 
 class FindComponent(UserAction):
     def __init__(self, component_name: str=Page.ROOT_COMPONENT_NAME, *args):

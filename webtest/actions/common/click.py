@@ -53,6 +53,7 @@ class ClickOnLink(UserAction):
     def perform_self(self, agent: 'WebAgent') -> bool:
         page = agent.get_current_page()  # type: Page
         try:
+            self._logger.debug("Attempt to click on link with text '{}'.".format(self._link_text))
             link = UserAction._get_link(page, self._link_text, self._component, self._subcomponents) # type: Element
             if link.visible:
                 self._logger.info("Clicking on link with text '{}'.".format(self._link_text))
@@ -65,6 +66,26 @@ class ClickOnLink(UserAction):
             self.action_failure(ex)
             return False
 
+
+class ClickOnLinkFirstVisible(ClickOnLink):
+    def __init__(self, *args, **kwargs):
+        super(ClickOnLinkFirstVisible, self).__init__(*args,**kwargs)
+
+    def perform_self(self, agent: 'WebAgent') -> bool:
+        page = agent.get_current_page()  # type: Page
+        try:
+            self._logger.debug("Attempt to click on link with text '{}'.".format(self._link_text))
+            link = UserAction._get_link_first_visible(page, self._link_text, self._component, self._subcomponents) # type: Element
+            if link.visible:
+                self._logger.info("Clicking on link with text '{}'.".format(self._link_text))
+                return link.click(link)
+            else:
+                self.action_failure(msg="Element is not visible.")
+                return False
+
+        except Exception as ex:
+            self.action_failure(ex)
+            return False
 
 
 class ClickOnElement(UserAction):
