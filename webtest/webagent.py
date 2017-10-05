@@ -46,6 +46,13 @@ from webtest.components.pagemodel.component import Component
 
 # Class definition ____________________________________________________
 
+#
+# WebAgent class is supposed to represent user of the website and store
+# resources available to such user. This includes Templates of potentially
+# visited webpages (i.e. knowledge about these pages) and browser it self.
+# Class has method to perform given user actions in browser and by doing
+# so simulate user's behavior.
+#
 class WebAgent(object):
     BROWSER_CHROME = "chrome"
     BROWSER_FIREFOX = "firefox"
@@ -64,6 +71,11 @@ class WebAgent(object):
         self._templates_by_name = dict()
         self.add_more_templates(template_list)
 
+    #
+    # Method is supposed to replace existing templates with new set.
+    # @param template_list: list of instances inherited form PageModel
+    # @return None
+    #
     def refresh_templates(self, template_list: list=list()) -> None:
         self._logger.info("Clearing up page templates.")
         self._templates_by_url = dict()
@@ -72,6 +84,11 @@ class WebAgent(object):
         self.add_more_templates(template_list)
 
 
+    #
+    # Method is supposed to add to existing templates collection new ones.
+    # @param template_list: list of instances inherited form PageModel
+    # @return None
+    #
     def add_more_templates(self, template_list: list=list()) -> None:
         self._logger.info("Adding {} new page templates.".format(len(template_list)))
         for template in template_list: # type: PageModel
@@ -79,6 +96,14 @@ class WebAgent(object):
             self._templates_by_name[template.name] = template
 
 
+    #
+    # Method starts instance of selected web browser. Default one is
+    # google chrome. If there is already running browser under this
+    # instance of WebAgent and replacement is different browser,
+    # current instance is closed and replacement is started.
+    # @param browser: name of web browser to use
+    # @return None
+    #
     def start_up_browser(self, browser: str =BROWSER_CHROME) -> None:
         if self._browser is not None and self._browser.name.lower() == browser:
             if self._browser.is_running:
@@ -117,29 +142,61 @@ class WebAgent(object):
         self._browser.start_webdriver()
         return
 
+
+    #
+    # Method closes instance of selected web browser. Default one is google chrome.
+    # @param browser: name of web browser to use
+    # @return None
+    #
     def close_browser(self) -> None:
         self._logger.debug("Closing webbrowser.")
         self._browser.quit()
         return
 
-    def is_browser_running(self):
+
+    #
+    # Method returns information about state of browser under this instance of WebAgent
+    # @return True if some instance of browser is running, False otherwise
+    #
+    def is_browser_running(self) -> bool:
         if self._browser is not None:
             return self._browser.is_running
 
         return False
 
+
+    #
+    # Method makes the running browser to visit page with use of URL.
+    #
+    # @param host: hostname that is part of URL (e.g. www.example.com or IP address)
+    # @param port: port number in case it is not standard port 80
+    #              value 0 means not uo use port number in URL
+    # @param uri: string that is usually part of HTTP GET request
+    # @param protocol: in some cases called schema - "http" or "https"
+    # @return instance of Page
+    #
     def go_to_page(self,
             host: str,
             port: int = 0, # 8161,
-            url: str = "/",
+            uri: str = "/",
             protocol: str =HTTP_CONST.PROTOCOL_HTTP) -> Page or None:
 
         self._logger.debug("Creating new page model without any components.")
-        model = PageModel(protocol=protocol, host=host, port=port, url=url)
+        model = PageModel(protocol=protocol, host=host, port=port, uri=uri)
 
         self._logger.debug("Connecting to '{}' via this address.".format(model.url))
         return self.get_page(page_model=model)
 
+
+    #
+    # Method makes the running browser to visit page with use one of the methods represented
+    # by its arguments. User is supposed to fill only one of them.
+    #
+    # @param page_model: PageModel instance containing template and URL for page to visit
+    # @param full_url: full URL address as it can be seen in browsers address bar
+    # @param name: name of the template known to this instance of WebAgent
+    # @return instance of Page
+    #
     def get_page(self, page_model: PageModel=None, full_url: str=None, name=None) -> Page or None:
         if page_model is not None:
             debug_message = "Getting page '{}' based on predefined model/template."
@@ -168,9 +225,27 @@ class WebAgent(object):
 
         return page
 
+
+    #
+    # Method returns instance of web page currently displayed in browser assuming
+    # that only this instance of WebAgent was interacting with it. Otherwise
+    # method returns instance of web page that is last known visited page by this
+    # instance of WebAgent.
+    #
+    # @param None
+    # @return instance of Page
+    #
     def get_current_page(self) -> Page or None:
         return self._browser.get_current_page
 
+
+    #
+    # Method performs action represented by object given to it as argument as if
+    # it is action performed by actual user browsing the internet.
+    #
+    # @param action: instance of UserAction or its subclasses
+    # @return True if action succeeded, False otherwise
+    #
     def perform_action(self, action: 'UserAction') -> bool:
         success = action.perform_self(self)
         # It is not necessary to wait for frameworks twice #0
@@ -227,6 +302,17 @@ class WebAgent(object):
 
         return success
 
+
+    #
+    # Experimental method that performs action represented by object given
+    # to it as argument as if it is action performed by actual user browsing
+    # the internet. Unlike perform_action method it is supposed to return
+    # actual result of given action. Result depends on action implementation
+    # of action object it self and not on this method.
+    #
+    # @param action: instance of UserAction or its subclasses
+    # @return True if action succeeded, False otherwise
+    #
     def perform_action_get(self, action: 'UserAction') -> object or None:
         return action.perform_self(self)
 
