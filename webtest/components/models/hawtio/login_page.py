@@ -10,8 +10,8 @@ from webtest.common.http import Constants
 
 
 class HawtioLoginPageNS(PageModel):
-    def __init__(self, *arg, **kw):
-        super(HawtioLoginPageNS, self).__init__(protocol=Constants.PROTOCOL_HTTP, host="rhel7", port=8161, uri="hawtio", *arg, **kw)
+    def __init__(self,protocol=Constants.PROTOCOL_HTTP, host="rhel7", port=8161, uri="hawtio", *arg, **kw):
+        super(HawtioLoginPageNS, self).__init__(protocol, host, port, uri, *arg, **kw)
 
     def _create_template(self):
         # ( name: str, selector_type: Selector.*, selector_value: str, parent: str=None)
