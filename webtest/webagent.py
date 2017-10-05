@@ -59,12 +59,25 @@ class WebAgent(object):
 
         self._browser = None # type: Browser
         self._page = None
+
+        self._templates_by_url = dict()
+        self._templates_by_name = dict()
+        self.add_more_templates(template_list)
+
+    def refresh_templates(self, template_list: list=list()) -> None:
+        self._logger.info("Clearing up page templates.")
         self._templates_by_url = dict()
         self._templates_by_name = dict()
 
+        self.add_more_templates(template_list)
+
+
+    def add_more_templates(self, template_list: list=list()) -> None:
+        self._logger.info("Adding {} new page templates.".format(len(template_list)))
         for template in template_list: # type: PageModel
             self._templates_by_url[template.url.string()] = template
             self._templates_by_name[template.name] = template
+
 
     def start_up_browser(self, browser: str =BROWSER_CHROME) -> None:
         if self._browser is not None and self._browser.name.lower() == browser:
