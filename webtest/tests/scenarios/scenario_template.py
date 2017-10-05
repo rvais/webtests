@@ -11,6 +11,7 @@ from webtest.components.models.google.google import GoogleMainPage
 from webtest.actions.common.open_browser import OpenBrowser
 from webtest.actions.common.close_browser import CloseBrowser
 from webtest.actions.user_action import UserAction
+from webtest.actions.common.fail import FailAction
 
 # import other things required here:  (ideally this section should be empty)
 
@@ -46,7 +47,9 @@ steps = [
     OpenBrowser(),
 
     # generic user action, what ever needs to be done belongs here:
-    UserAction(),
+    UserAction(delay=5),
+    FailAction(),
+    UserAction(delay=5),
 
     # exit the browser
     CloseBrowser(),
