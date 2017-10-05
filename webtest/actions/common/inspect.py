@@ -15,6 +15,11 @@ from webtest.components.pagemodel.element import Element
 from webtest.common.scripts.frameworks import angular_loaded, render_cycle
 from webtest.actions.user_action import UserAction
 
+# Group of actions dedicated to inspecting content of web page or its parts.
+
+#
+# Abstract class, do not use.
+#
 class Inspect(UserAction):
     def __init__(self, expect: object=False,  *args, **kwargs):
         super(Inspect, self).__init__(*args, **kwargs)
@@ -48,8 +53,11 @@ class Inspect(UserAction):
         raise Exception("This is abstract class, subclass has to redefine _inspect() method.")
 
 
-
+#
+# Action performing check of URL string of current web page.
+#
 class CheckURL(Inspect):
+    # Expected URL object is first positional argument
     def __init__(self, *args, **kwargs):
         super(CheckURL, self).__init__(*args, **kwargs)
         self._failure_msg = "Url gained does not equal to expected one."
@@ -61,8 +69,11 @@ class CheckURL(Inspect):
         return page.url
 
 
-
+#
+# Action performing check for existence of specified template component on current web page.
+#
 class ComponentExists(Inspect):
+    # Strings representing hierarchy of components are expected as positional arguments.
     def __init__(self, component_name: str=Page.ROOT_COMPONENT_NAME, *args, **kwargs):
         super(ComponentExists, self).__init__(True, **kwargs)
         self._failure_msg = "HTML element of specified component does not exist on currently visited page."
@@ -80,8 +91,11 @@ class ComponentExists(Inspect):
         return component is not None
 
 
-
+#
+# Action performing check for existence of specified link on current web page.
+#
 class LinkExists(Inspect):
+    # Link text followed by strings representing hierarchy of components are expected as positional arguments.
     def __init__(self, link_text:str, component_name: str=Page.ROOT_COMPONENT_NAME, *args, **kwargs):
         super(LinkExists, self).__init__(**kwargs)
         self._failure_msg = "Hypertext link with given text does not exist under specified component on currently visited page."
@@ -100,8 +114,12 @@ class LinkExists(Inspect):
         return link is not None
 
 
-
+#
+# Action performing check for existence of specified text in given element on current web page.
+#
 class ElementContentText(Inspect):
+    # Expected text, type of element selector with its value followed by strings
+    # representing hierarchy of components are expected as positional arguments.
     def __init__(self, text_content: str, selector: str, value: str, component_name: str=Page.ROOT_COMPONENT_NAME, *args, **kwargs):
         super(ElementContentText, self).__init__(True, **kwargs)
         self._failure_msg = "Content of specified element differs from expected value."

@@ -7,6 +7,9 @@
 from webtest.actions.user_action import UserAction
 from webtest.webagent import WebAgent
 
+#
+# Action closes active instance of browser.
+#
 class CloseBrowser(UserAction):
 
     def __init__(self, *args, **kwargs):

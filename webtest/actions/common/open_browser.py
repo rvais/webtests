@@ -7,6 +7,9 @@
 from webtest.actions.user_action import UserAction
 from webtest.webagent import WebAgent
 
+#
+# Action starts new instance of specified browser.
+#
 class OpenBrowser(UserAction):
 
     def __init__(self, browser_name: str='', *args, **kwargs):

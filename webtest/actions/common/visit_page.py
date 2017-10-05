@@ -12,6 +12,7 @@ from webtest.common.http import format_url
 from webtest.common.http import Constants as HTTP_CONST
 from webtest.components.pagemodel.model import PageModel
 
+# Group of actions dedicated to accessing web page by its identification.
 
 class VisitPage(UserAction):
     def __init__(self, redirection: bool=True, page_change: bool=True, delay: int=0):

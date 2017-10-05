@@ -10,7 +10,14 @@ from webtest.components.pagemodel.page import Page
 from webtest.components.pagemodel.element import Element
 from webtest.components.pagemodel.component import Component
 
+# Group of actions dedicated to clicking on things on a web page.
+
+#
+# Action performing click on a known part of web page. Such part is usually
+# as component in a template for given page and is expected to exist.
+#
 class ClickOnComponent(UserAction):
+    # Strings representing hierarchy of components are expected as positional arguments.
     def __init__(self, component_name: str=Page.ROOT_COMPONENT_NAME, *args, **kwargs):
         super(ClickOnComponent, self).__init__(**kwargs)
 
@@ -35,8 +42,12 @@ class ClickOnComponent(UserAction):
             return False
 
 
-
+#
+# Action performing click on a link found by its text. Search is performed
+# on some component known in a template for given page and is expected to exist.
+#
 class ClickOnLink(UserAction):
+    # Link text followed by strings representing hierarchy of components are expected as positional arguments.
     def __init__(self, link_text:str, component_name: str=Page.ROOT_COMPONENT_NAME, *args, **kwargs):
         super(ClickOnLink, self).__init__(**kwargs)
 
@@ -66,7 +77,10 @@ class ClickOnLink(UserAction):
             self.action_failure(ex)
             return False
 
-
+#
+# Exactly the same as ClickOnLink but with slightly different implementation
+# of searching for link it self.
+#
 class ClickOnLinkFirstVisible(ClickOnLink):
     def __init__(self, *args, **kwargs):
         super(ClickOnLinkFirstVisible, self).__init__(*args,**kwargs)
@@ -88,7 +102,13 @@ class ClickOnLinkFirstVisible(ClickOnLink):
             return False
 
 
+#
+# Action performing click on a any element found in website. Search is performed
+# on some component known in a template for given page and is expected to exist.
+#
 class ClickOnElement(UserAction):
+    # Type of element selector with its value followed by strings representing
+    # hierarchy of components are expected as positional arguments.
     def __init__(self, selector: str, value: str, component_name: str=Page.ROOT_COMPONENT_NAME, *args, **kwargs):
         super(ClickOnElement, self).__init__(**kwargs)
 

@@ -8,7 +8,15 @@ from webtest.webagent import WebAgent
 from webtest.components.pagemodel.page import Page
 from webtest.components.pagemodel.element import Element
 
+# Group of actions dedicated to filling forms ond its parts on web page.
+
+#
+# Action fills the fields of known form. Search for fields is performed
+# on form represented by component known in a template for given page and is expected to exist.
+#
 class FillForm(UserAction):
+    # Dictionary containing form's data followed by strings representing
+    # hierarchy of components are expected as positional arguments.
     def __init__(self, data: dict, component_name: str=Page.ROOT_COMPONENT_NAME, *args, **kwargs):
         super(FillForm, self).__init__(**kwargs)
 
@@ -30,8 +38,13 @@ class FillForm(UserAction):
             return False
 
 
-
+#
+# Action fills the specific input type field of known form. Search for fields is performed
+# on form represented by component known in a template for given page and is expected to exist.
+#
 class FillSpecificInputField(UserAction):
+    # Input identification and its value followed by strings representing
+    # hierarchy of components are expected as positional arguments.
     def __init__(self, input_type: str, value: str, component_name: str = Page.ROOT_COMPONENT_NAME, *args, **kwargs):
         super(FillSpecificInputField, self).__init__(**kwargs)
 
@@ -58,7 +71,15 @@ class FillSpecificInputField(UserAction):
                 self.action_failure(ex)
                 return False
 
+
+#
+# Action fills the specific page element of known form assuming it is element supporting such action.
+# Search for fields is performed  on form represented by component known in a template for given page
+# and is expected to exist.
+#
 class FillSpecificElement(UserAction):
+    # element identification information and its value followed by strings representing
+    # hierarchy of components are expected as positional arguments.
     def __init__(self, tagname: str, attributes: dict=None, value: str or list or bool='',  component_name: str = Page.ROOT_COMPONENT_NAME, *args, **kwargs):
         super(FillSpecificElement, self).__init__(**kwargs)
 

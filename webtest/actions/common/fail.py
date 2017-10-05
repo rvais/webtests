@@ -7,6 +7,10 @@
 from webtest.actions.user_action import UserAction
 from webtest.webagent import WebAgent
 
+#
+# Action that is supposed to fail every time. Used for debugging,
+# experimentation and special case purposes.
+#
 class FailAction(UserAction):
     def __init__(self, *args, **kwargs):
         super(FailAction, self).__init__(*args, **kwargs)
