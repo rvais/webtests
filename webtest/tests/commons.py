@@ -78,7 +78,35 @@ def user_agent(request):
 
 
 class Performer(object):
+    def __init__(self):
+        class_name = str(self.__class__.__name__)
+        self._logger = get_logger(class_name)
 
-    def perform_actions(self, agent: WebAgent, actions: list=list()):
-        for action in actions: # type: UserAction
-            assert agent.perform_action(action)
+    def run_scenario(self, scenario_name: str="Unknown scenario", models_used: list=list(), steps: list=list(), agent: WebAgent=None) -> bool:
+        if agent is None:
+            self._logger.info("No WebAgent instance has been supplied -> creating new one.")
+            agent = WebAgent()
+
+        self._logger.info("Starting scenario '{}'.".format(scenario_name))
+        agent.refresh_templates(models_used)
+        passed = self.perform_actions(agent, steps)
+        success =  passed == len(steps)
+
+        if not success:
+            self._logger.warning("Scenario '{}' FAILED with only {}/{} successful steps.".format(scenario_name, passed, len(steps)))
+            return
+
+        self._logger.warning("Scenario '{}' PASSED with {}/{} successful steps.".format(scenario_name, passed, len(steps)))
+        return
+
+
+    def perform_actions(self, agent: WebAgent, actions: list=list()) -> int:
+        count = 0
+        try:
+            for action in actions: # type: UserAction
+                assert agent.perform_action(action)
+                count = count + 1
+        except AssertionError as ex:
+            agent.close_browser()
+
+        return count
