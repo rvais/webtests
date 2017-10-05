@@ -15,7 +15,26 @@ from webtest.components.pagemodel.component import Component
 from webtest.components.pagemodel.element import Element
 from webtest.common.scripts.frameworks import angular_loaded, render_cycle
 
+#
+# UserAction class represents abstraction of each possible action that user
+# Can perform and by doing so interact with webpage in his browser. Class
+# contains implementation of methods that are common for every action form
+# test's and background code's point of view. Also has support methods for
+# its subclasses. To create new user action this class needs to be subclassed,
+# methods __init__() and perform_self() overridden.
+#
 class UserAction(object):
+    #
+    # Constructor. Method is responsible for initializing common attributes
+    # shared by all user actions.
+    #
+    # @param redirection: boolean indicating if action is expected to cause redirection
+    # @param page_change: boolean indicating if action is expected to cause changes
+    #             on current page but page won't be redirected
+    # @param delay: number of seconds to wait after this action is completed. Some actions
+    #             in selenium might be done quicker that they take effect in browser or
+    #             it is desired for user to se the effect of that action.
+    #
     def __init__(self, redirection: bool=False, page_change: bool=False, delay: int=0):
         self._class_name = str(self.__class__.__name__)
         self._logger = get_logger(self._class_name) # type: logging.Logger
@@ -24,10 +43,29 @@ class UserAction(object):
         self._change = page_change
         self._delay_for_user = delay
 
+
+    #
+    # Method responsible for performing action it self and reporting success
+    # or failure. Differs in implementation form action to action.
+    #
+    # @param agent: instance of WebAgent that should perform this action
+    # @return True if action succeeded, False otherwise
+    #
+    # throw: might raise exception
+    #
     def perform_self(self, agent: 'WebAgent') -> bool:
         self._logger.info("Performing generic user action.")
         return True
 
+    #
+    # Method responsible for reporting failure and it's cause.
+    # Should be used in perform_self() method's implementation.
+    #
+    # @param ex: instance of Exception that caused failure if any
+    # @param msg: text message describing or explaining failure and its
+    #           probable cause.
+    # @return None
+    #
     def action_failure(self, ex: Exception=None, msg: str=None ):
         self._logger.info("Action '{}' FAILED.".format(self._class_name))
         if msg is not None:
@@ -36,34 +74,87 @@ class UserAction(object):
         if ex is not None:
             self._logger.warning(ex)
 
+    #
+    # Method returns information whether or not redirection is expected
+    # to be caused by this action.
+    #
+    # @param None
+    # @return True if redirection is expected, false otherwise
+    #
     def expected_redirection(self) -> bool:
         return self._redirection
 
+    #
+    # Method returns information whether or not content change is expected
+    # to be caused by this action.
+    #
+    # @param None
+    # @return True if content change is expected, false otherwise
+    #
     def expected_content_change(self) -> bool:
         return self._change
 
+    #
+    # Method returns number of seconds to wait after this action is completed
+    #
+    # @param None
+    # @return delay length in seconds
+    #
     def delay_for_user_to_see(self) -> int:
         return self._delay_for_user
 
+    #
+    # Method changes information whether or not redirection is expected
+    # to be caused by this action.
+    #
+    # @param True if redirection is expected, false otherwise
+    # @return None
+    #
     def set_expected_redirection(self, redirection: bool):
         self._redirection = redirection
 
+    #
+    # Method changes information whether or not content change is expected
+    # to be caused by this action.
+    #
+    # @param True if content change is expected, false otherwise
+    # @return None
+    #
     def set_expected_content_change(self, change: bool):
         self._change = change
 
+    #
+    # Method changes information how long to delay after completing this action.
+    #
+    # @param int number of second to delay
+    # @return None
+    #
     def set_delay_for_users(self, delay: int):
         self._delay_for_user = delay
 
+    #
+    # Method responsible for waiting for javascript frameworks to finish the
+    # changes on a web page caused by this action.
+    #
+    # @param agent: instance of WebAgent that should perform this action
+    # @return None
+    #
     def wait_for_frameworks(self, agent: 'WebAgent') -> None:
         page = agent.get_current_page()
         page.execute_script(render_cycle, False)
         sleep(2)
         page.execute_script(angular_loaded)
 
+
+    #
+    # Name of the Action, class name by default
+    #
     @property
     def name(self):
         return self._class_name
 
+
+# Support and experimental methods/classes, not a part of public interface
     @staticmethod
     def _get_component(page: Page, component: str, subcomponents: list) -> Component or None:
         component = page.get_component(component) # type: Component
