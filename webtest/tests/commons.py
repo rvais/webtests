@@ -12,6 +12,12 @@ from webtest.actions.common.open_browser import OpenBrowser
 from webtest.actions.common.close_browser import CloseBrowser
 from webtest.actions.user_action import UserAction
 
+
+#
+# Fixture for pytest that takes care of lunching and closing browser
+# so it is not started and closed before and after every single test and there
+# is no mess in code.
+#
 @pytest.fixture(scope="module")
 def page_to_test(request):
     logger = get_logger("Fixture")
@@ -57,6 +63,9 @@ def page_to_test(request):
     logger.info("Tear-down phase.")
     agent.close_browser()
 
+#
+# Fixture for pytest for setup and teardown of tests. Not working, experimental
+#
 @pytest.fixture(scope="module")
 def user_agent(request):
     logger = get_logger("Fixture")
@@ -76,7 +85,10 @@ def user_agent(request):
     logger.info("Tear-down phase.")
     assert agent.perform_action(CloseBrowser())
 
-
+#
+# Class responsible for everything common between multiple tests.
+# Currently modified for running scenarios.
+#
 class Performer(object):
     def __init__(self):
         class_name = str(self.__class__.__name__)
