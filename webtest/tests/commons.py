@@ -114,11 +114,15 @@ class Performer(object):
 
     def perform_actions(self, agent: WebAgent, actions: list=list()) -> int:
         count = 0
-        try:
-            for action in actions: # type: UserAction
+        for action in actions:  # type: UserAction
+            try:
                 assert agent.perform_action(action)
                 count = count + 1
-        except AssertionError as ex:
-            agent.close_browser()
+            except AssertionError as ex:
+                if not action.stop_on_failure:
+                    continue
+
+                agent.close_browser()
+                break
 
         return count

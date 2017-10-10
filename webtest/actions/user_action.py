@@ -35,13 +35,14 @@ class UserAction(object):
     #             in selenium might be done quicker that they take effect in browser or
     #             it is desired for user to se the effect of that action.
     #
-    def __init__(self, redirection: bool=False, page_change: bool=False, delay: int=0):
+    def __init__(self, redirection: bool=False, page_change: bool=False, delay: int=0, stop_on_failure: bool=True):
         self._class_name = str(self.__class__.__name__)
         self._logger = get_logger(self._class_name) # type: logging.Logger
 
         self._redirection = redirection
         self._change = page_change
         self._delay_for_user = delay
+        self._stop_on_failure = stop_on_failure
 
 
     #
@@ -150,9 +151,16 @@ class UserAction(object):
     # Name of the Action, class name by default
     #
     @property
-    def name(self):
+    def name(self) -> str:
         return self._class_name
 
+    #
+    # Indicates if test/scenario should be stopped if this action fails.
+    # Default value is True but can be redefined by action or user.
+    #
+    @property
+    def stop_on_failure(self) -> bool:
+        return self._stop_on_failure
 
 # Support and experimental methods/classes, not a part of public interface
     @staticmethod
