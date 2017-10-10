@@ -60,7 +60,7 @@ class WebAgent(object):
     BROWSER_PATH = None
     DRIVER_PATH = None
 
-    def __init__(self, template_list: list=list()):
+    def __init__(self, template_list: list=list(), browser_path: str or None=BROWSER_PATH, driver_path: str or None=DRIVER_PATH):
         class_name = str(self.__class__.__name__)
         self._logger = get_logger(class_name)
 
@@ -70,6 +70,8 @@ class WebAgent(object):
         self._templates_by_url = dict()
         self._templates_by_name = dict()
         self.add_more_templates(template_list)
+        self._browser_path = browser_path
+        self._driver_path = driver_path
 
     #
     # Method is supposed to replace existing templates with new set.
@@ -124,19 +126,30 @@ class WebAgent(object):
         self._logger.debug("'{}' has been selected as browser.".format(browser))
 
         envvar = "BROWSER_BIN_PATH"
-        if envvar in os.environ:
+        if envvar in os.environ and self._browser_path is None:
             self._logger.debug("Environment variable '{}' has been set.".format(envvar))
             self._logger.debug("Path '{}' has been set as binary for '{}' browser."
                 .format(os.environ[envvar], browser))
             self._browser.set_new_browser_path(os.environ[envvar])
 
         envvar = "DRIVER_BIN_PATH"
-        if envvar in os.environ:
+        if envvar in os.environ and self._driver_path is None:
             self._logger.debug("Environment variable '{}' has been set.".format(envvar))
             self._logger.debug("Path '{}' has been set as binary"
                 " for selenium webdriver.".format(os.environ[envvar]))
             self._browser.set_new_webdriver_path(os.environ[envvar])
 
+        if self._browser_path is not None:
+            self._logger.debug("Path to browser's binary has been set in code.")
+            self._logger.debug("Path '{}' has been set as binary for '{}' browser."
+                .format(self._browser_path, browser))
+            self._browser.set_new_browser_path(self._browser_path)
+
+        if self._driver_path is not None:
+            self._logger.debug("Path to webdriver's binary has been set in code.")
+            self._logger.debug("Path '{}' has been set as binary"
+                " for selenium webdriver.".format(self._driver_path))
+            self._browser.set_new_webdriver_path(self._driver_path)
 
         self._logger.debug("Launching webdriver for '{}' browser.".format(browser))
         self._browser.start_webdriver()
