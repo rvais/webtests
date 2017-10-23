@@ -131,35 +131,3 @@ class Wait(object) :
                 check = True
                 Wait.__profile__[key] = profile[key]
         return check
-
-# to limit, immediate polling
-no_stop = {
-    'exception-list': list(),
-    'polling-period': 0,
-    'timeout': 0,
-    'max_attempts': 0,
-}
-
-# minimal periods for waiting, sort of impatient profile
-minimal_wait = {
-    'exception-list' : list(),
-    'polling-period' : 0.2,
-    'timeout' : 5,
-    'max_attempts' : 15,
-}
-
-# short periods for waiting but noticeable
-short_wait = {
-    'exception-list' : list(),
-    'polling-period' : 0.5,
-    'timeout' : 7,
-    'max_attempts' : 100,
-}
-
-# long periods for waiting so it is noticeable significantly during execution
-visible_wait = {
-    'exception-list' : list(),
-    'polling-period' : 1,
-    'timeout' : 15,
-    'max_attempts' : 25,
-}
