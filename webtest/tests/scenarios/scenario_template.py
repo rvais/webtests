@@ -18,7 +18,7 @@ from webtest.actions.common.fail import FailAction
 
 
 # config section (e.g. set host name and port for all templates)_______________
-scenario_name="Example scenario"
+scenario_name = "Example scenario"
 
 # template_hostname = "rhel7"
 # template_port = 8161

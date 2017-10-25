@@ -25,7 +25,7 @@ from webtest.common.selector import Selector
 
 
 # config section (e.g. set host name and port for all templates)_______________
-scenario_name="Address&Queue - Create&Delete"
+scenario_name = "Address&Queue - Create&Delete"
 
 template_hostname = "rhel7"
 template_port = 8161
