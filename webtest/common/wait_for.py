@@ -4,24 +4,11 @@
 # Authors:  Roman Vais <rvais@redhat.com>
 #
 
-from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support.select import Select
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
+
 from time import time, sleep
 from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
 from webtest.common.logger import get_logger
-
-# EC.url_changes
-# EC.element_located_to_be_selected
-# EC.alert_is_present
-# EC.frame_to_be_available_and_switch_to_it
-# EC.presence_of_all_elements_located
-# EC.presence_of_element_located
-# EC.text_to_be_present_in_element
-# EC.text_to_be_present_in_element_value
-
-#WebDriverWait(ff, 10).until(EC.presence_of_element_located((By.ID, "myDynamicElement")))
+from webtest.config.configurator import Configurator
 
 class Wait(object) :
 
@@ -48,9 +35,6 @@ class Wait(object) :
         self._max = Wait.__profile__['max_attempts']
         self._limited = self._max >= 0 or self._timeout > 0
 
-        # customize setting according to parameters
-        # self._setup(*args, **kwargs)
-
         # log current settings
         self._logger.trace("Initialized wait conditions to following values:")
         self._logger.trace("'{}':  {}". format('exception-list', self._exception_list))
@@ -62,24 +46,15 @@ class Wait(object) :
         self._exceptions = tuple(self._exception_list)
 
 
-#    def _setup(self, expected_result: bool=True, timeout: int=-1, polling_period: float=-1.0,
-#                 max_attempts: int=-1, exception_list: list=list()):
-#        self._logger.debug("Setting up custom values ...")
-#        self._expected = expected_result
-#
-#        if timeout >= 0:
-#           self._timeout = timeout
-#
-#        if polling_period > 0:
-#            self._polling_period = polling_period
-#
-#        if max_attempts > 0:
-#            self._max = max_attempts
-#
-#        self._exception_list.extend(exception_list)
-
 
     def __call__(self, *args, **kwargs):
+        # customize setting according to configuration
+        cfg = Configurator()
+        self._polling_period = cfg.get_option('attempt_poling_period')
+        self._timeout = cfg.get_option('attempt_timeout')
+        self._max = cfg.get_option('attempt_max_count')
+        self._limited = self._max >= 0 or self._timeout > 0
+
         self._logger.trace("Waiting on condition ...")
         debug_print = "Wait call\n{}"
         for x in args:
@@ -117,17 +92,3 @@ class Wait(object) :
             except Exception as ex:
                 raise ex
 
-
-
-    @staticmethod
-    def set_wait_condition_profile(profile: dict) -> bool :
-        class_name = str(__class__.__name__)
-        logger = get_logger(class_name)
-        logger.debug("Setting up global waiting profile.")
-
-        check = False
-        for key in Wait.__profile__:
-            if key in profile.keys():
-                check = True
-                Wait.__profile__[key] = profile[key]
-        return check

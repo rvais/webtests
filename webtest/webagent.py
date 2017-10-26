@@ -29,6 +29,7 @@ from webtest.components.pagemodel import model
 from webtest.components.pagemodel.model import PageModel
 from webtest.components.pagemodel.page import Page
 from webtest.components.pagemodel.component import Component
+from webtest.config.configurator import Configurator
 
 # import pytest
 # from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException, WebDriverException
@@ -106,7 +107,11 @@ class WebAgent(object):
     # @param browser: name of web browser to use
     # @return None
     #
-    def start_up_browser(self, browser: str =BROWSER_CHROME) -> None:
+    def start_up_browser(self, browser: str =None) -> None:
+        cfg = Configurator()
+        if browser is None:
+            browser = cfg.get_option('browser')
+
         if self._browser is not None and self._browser.name.lower() == browser:
             if self._browser.is_running:
                 self._logger.debug("Selected browser is already running.")
@@ -122,34 +127,27 @@ class WebAgent(object):
 
         if browser == WebAgent.BROWSER_CHROME:
             self._browser = Chrome()
+
+#        if browser == WebAgent.BROWSER_FIREFOX:
+#            self._browser = Firefox()
         
         self._logger.debug("'{}' has been selected as browser.".format(browser))
 
-        envvar = "BROWSER_BIN_PATH"
-        if envvar in os.environ and self._browser_path is None:
-            self._logger.debug("Environment variable '{}' has been set.".format(envvar))
+        browser_path = self._browser_path
+        driver_path = self._driver_path
+
+        if browser_path is None:
+            browser_path = cfg.get_option('browser_bin_path')
             self._logger.debug("Path '{}' has been set as binary for '{}' browser."
-                .format(os.environ[envvar], browser))
-            self._browser.set_new_browser_path(os.environ[envvar])
+                .format(browser_path, browser))
 
-        envvar = "DRIVER_BIN_PATH"
-        if envvar in os.environ and self._driver_path is None:
-            self._logger.debug("Environment variable '{}' has been set.".format(envvar))
-            self._logger.debug("Path '{}' has been set as binary"
-                " for selenium webdriver.".format(os.environ[envvar]))
-            self._browser.set_new_webdriver_path(os.environ[envvar])
+        if driver_path is None:
+            driver_path = cfg.get_option('driver_bin_path')
+            self._logger.debug("Path '{}' has been set as binary" 
+                " for selenium webdriver.".format(driver_path))
 
-        if self._browser_path is not None:
-            self._logger.debug("Path to browser's binary has been set in code.")
-            self._logger.debug("Path '{}' has been set as binary for '{}' browser."
-                .format(self._browser_path, browser))
-            self._browser.set_new_browser_path(self._browser_path)
-
-        if self._driver_path is not None:
-            self._logger.debug("Path to webdriver's binary has been set in code.")
-            self._logger.debug("Path '{}' has been set as binary"
-                " for selenium webdriver.".format(self._driver_path))
-            self._browser.set_new_webdriver_path(self._driver_path)
+        self._browser.set_new_browser_path(browser_path)
+        self._browser.set_new_webdriver_path(driver_path)
 
         self._logger.debug("Launching webdriver for '{}' browser.".format(browser))
         self._browser.start_webdriver()
