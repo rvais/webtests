@@ -23,8 +23,31 @@ class LogLevel(object):
     TRACE = TRACE
     DUMP = DUMP
     NOTSET = logging.NOTSET
+    DEFAULT = logging.INFO
 
-DEFAULT_LOG_LEVEL = LogLevel.INFO  # CRITICAL | ERROR | WARNING | INFO | DEBUG | TRACE | DUMP | NOTSET
+    __mapping_dictionary = {
+        "CRITICAL" : CRITICAL,
+        "ERROR" : ERROR,
+        "WARNING" : WARNING,
+        "INFO" : INFO,
+        "DEBUG" : DEBUG,
+        "TRACE" : TRACE,
+        "DUMP" : DUMP,
+        "NOTSET" : NOTSET,
+        "DEFAULT" : INFO,
+    }
+
+    @staticmethod
+    def from_string(level:str) -> int:
+        value = None
+        try:
+            value = LogLevel.__mapping_dictionary[level]
+        except Exception:
+            pass
+
+        return value if value is not None else LogLevel.DEFAULT
+
+
 
 def get_logger(name="logger", level=None, sfx=None):
     if not isinstance(logging.getLoggerClass(), CustomLogger):
@@ -39,11 +62,8 @@ def get_logger(name="logger", level=None, sfx=None):
         name = "{}{}".format(name, sfx)
 
     logger = logging.getLogger(name)
+    logger.setLevel(LogLevel.DUMP)
     logname = "{}.log".format(name)
-
-    # logging level for whole logger
-    # can change log level in a subsequent call
-    logger.setLevel(DEFAULT_LOG_LEVEL)
 
     if level is not None:
         logger.setLevel(level)
