@@ -9,21 +9,26 @@ import os
 from webtest.config.argparser import ArgumentParser
 from webtest.config.scenario_loader import ScenarioLoader
 from webtest.config.configurator import Configurator
-
 from webtest.webagent import WebAgent
 from webtest.tests.commons import Performer
+from webtest.common.logger import get_logger
 
 # main ________________________________________________________________________
 def main(args=sys.argv[1:]) -> int:
+    # success of tests that will be run - indicates exit code
+    success = True
 
     ap = ArgumentParser()
     args = ap.parse_arguments(args)
 
     cfg = Configurator(args["config_file"])
     cfg.set_multiple_options(args)
-    cfg.save_as("./webtest.cfg")
+    # cfg.save_as("./webtest.cfg")
 
-    #loader = ScenarioLoader(cfg.get_option("scenarios_path"))
+    # get logger but after logging was configured
+    logger = get_logger("Main")
+
+    # loader = ScenarioLoader(cfg.get_option("scenarios_path"))
     sp = cfg.get_option("scenarios_path")
     if not os.path.isabs(sp):
         sp = os.path.abspath(sp)
@@ -38,17 +43,22 @@ def main(args=sys.argv[1:]) -> int:
     if name_list is None:
         name_list = list()
 
-    for scenario in name_list:
-        scenario = loader.load_scenario(group, scenario)
+    for scenario_name in name_list:
+        scenario = loader.load_scenario(group, scenario_name)
         if scenario is not None:
             scenarios.append(scenario)
+            logger.info("Scenario '{}' successfully loaded.". format(scenario_name))
+            continue
+
+        success = False
+        logger.info("Scenario '{}' not found.".format(scenario_name))
+
 
     performer = Performer()
     agent = WebAgent()
 
-    success = True
     for scenario in scenarios:
-        success = success and performer.run_scenario(*scenario, agent)
+        success = performer.run_scenario(*scenario, agent=agent) and success
 
     if not success:
         return 1
