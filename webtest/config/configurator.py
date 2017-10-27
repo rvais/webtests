@@ -90,7 +90,7 @@ class Configurator(object):
                     'debug_enabled' : True,
                     'trace_enabled' : True,
                     'scenarios_path' : './tests/scenarios/',
-                    'attempt_poling_period' : 2,
+                    'attempt_polling_period' : 2,
                     'attempt_timeout' : 8,
                     'attempt_max_count' : 3,
                 }
