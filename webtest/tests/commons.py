@@ -106,10 +106,10 @@ class Performer(object):
 
         if not success:
             self._logger.warning("Scenario '{}' FAILED with only {}/{} successful steps.".format(scenario_name, passed, len(steps)))
-            return
+            return False
 
         self._logger.warning("Scenario '{}' PASSED with {}/{} successful steps.".format(scenario_name, passed, len(steps)))
-        return
+        return True
 
 
     def perform_actions(self, agent: WebAgent, actions: list=list()) -> int:

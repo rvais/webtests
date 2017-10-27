@@ -14,7 +14,7 @@ from webtest.webagent import WebAgent
 from webtest.tests.commons import Performer
 
 # main ________________________________________________________________________
-def main(args=sys.argv[1:]):
+def main(args=sys.argv[1:]) -> int:
 
     ap = ArgumentParser()
     args = ap.parse_arguments(args)
@@ -46,8 +46,14 @@ def main(args=sys.argv[1:]):
     performer = Performer()
     agent = WebAgent()
 
+    success = True
     for scenario in scenarios:
-        performer.run_scenario(*scenario, agent)
+        success = success and performer.run_scenario(*scenario, agent)
+
+    if not success:
+        return 1
+
+    return 0
 
 if __name__ == '__main__':
-    main()
+    exit(main())
