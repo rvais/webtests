@@ -7,7 +7,7 @@
 from copy import copy
 from time import time, sleep
 from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
-from webtest.common.logger import get_logger
+from webtest.common.logging.logger import get_logger
 from webtest.config.configurator import Configurator
 
 class Wait(object) :

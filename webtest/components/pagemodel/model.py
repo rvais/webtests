@@ -8,7 +8,7 @@ from copy import copy
 from webtest.common.http import Constants as HTTP_CONST
 from webtest.common.http import URL
 from webtest.components.pagemodel.component import Component
-from webtest.common.logger import get_logger
+from webtest.common.logging.logger import get_logger
 
 #
 # PageModel class represents knowledge about the web page that user has

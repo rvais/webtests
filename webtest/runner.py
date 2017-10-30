@@ -11,7 +11,7 @@ from webtest.config.scenario_loader import ScenarioLoader
 from webtest.config.configurator import Configurator
 from webtest.webagent import WebAgent
 from webtest.tests.commons import Performer
-from webtest.common.logger import get_logger
+from webtest.common.logging.logger import get_logger
 
 # main ________________________________________________________________________
 def main(args=sys.argv[1:]) -> int:

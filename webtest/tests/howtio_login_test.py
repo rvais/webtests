@@ -8,7 +8,7 @@ from time import sleep
 import pytest
 from webtest.components.models.hawtio.login_page import HawtioLoginPageNS
 from webtest.components.pagemodel.page import Page
-from webtest.common.logger import get_logger
+from webtest.common.logging.logger import get_logger
 
 page_model = HawtioLoginPageNS()
 

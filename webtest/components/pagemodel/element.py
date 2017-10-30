@@ -7,7 +7,7 @@
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.select import Select
 
-from webtest.common.logger import get_logger
+from webtest.common.logging.logger import get_logger
 from webtest.common.selector import Selector
 from webtest.common.wait_for import Wait
 

@@ -12,7 +12,7 @@ from webtest.components.pagemodel.model import PageModel
 from webtest.components.pagemodel.element import Element
 from webtest.components.pagemodel.component import Component, RootComponent
 from webtest.components.pagemodel.mock_element import MockElement
-from webtest.common.logger import get_logger
+from webtest.common.logging.logger import get_logger
 
 class Page(object):
 

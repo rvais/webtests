@@ -20,7 +20,7 @@ from time import sleep
 # from webtest.actions.user_action import UserAction
 # from webtest.browsers.browser import Browser
 from webtest.browsers.chrome import Chrome
-from webtest.common.logger import get_logger
+from webtest.common.logging.logger import get_logger
 from webtest.common.http import Constants as HTTP_CONST, relax_url, cut_host_from_url
 from webtest.common.http import URL
 from webtest.components.models.google.google import GoogleMainPage

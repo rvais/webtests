@@ -10,7 +10,7 @@ from webtest.common.selector import Selector
 from webtest.components.pagemodel.element import WebElement
 from webtest.components.pagemodel.mock_element import MockElement
 from webtest.components.pagemodel.mock_element import Element
-from webtest.common.logger import get_logger
+from webtest.common.logging.logger import get_logger
 
 class Component(object):
     def __init__(self, name: str, selector_type: str, selector_value: str, parent: str=None, construction_exclude=False):

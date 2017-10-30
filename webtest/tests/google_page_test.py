@@ -8,7 +8,7 @@ from time import sleep
 import pytest
 from webtest.components.models.google.google import GoogleMainPage
 from webtest.components.pagemodel.page import Page
-from webtest.common.logger import get_logger
+from webtest.common.logging.logger import get_logger
 
 page_model = GoogleMainPage()
 

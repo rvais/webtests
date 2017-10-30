@@ -7,7 +7,7 @@
 import logging
 from time import sleep
 
-from webtest.common.logger import get_logger
+from webtest.common.logging.logger import get_logger
 from webtest.common.selector import Selector
 from webtest.webagent import WebAgent
 from webtest.components.pagemodel.page import Page

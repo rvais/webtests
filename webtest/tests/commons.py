@@ -7,7 +7,7 @@ from time import sleep
 
 import pytest
 from webtest.webagent import WebAgent
-from webtest.common.logger import get_logger
+from webtest.common.logging.logger import get_logger
 from webtest.actions.common.open_browser import OpenBrowser
 from webtest.actions.common.close_browser import CloseBrowser
 from webtest.actions.user_action import UserAction

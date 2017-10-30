@@ -10,7 +10,7 @@ from webtest.components.pagemodel.model import PageModel
 from webtest.components.pagemodel.page import Page
 from webtest.common.wait_for import Wait
 from webtest.common.http import URL
-from webtest.common.logger import get_logger
+from webtest.common.logging.logger import get_logger
 
 class Browser(object):
 
