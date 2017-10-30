@@ -109,7 +109,7 @@ class Configurator(object):
                 print("Configuration file '{}' does exist.".format(config_file))
                 try:
                     self.cfg.read_file(open(config_file))
-                except Exception as ex:
+                except BaseException as ex:
                     print("Cannot parse configuration file. Falling back to default settings.")
 
             else:
@@ -164,5 +164,5 @@ class Configurator(object):
                 print("Configuration file '{}' does exist.".format(config_file))
                 try:
                     self.cfg.read_file(open(config_file))
-                except Exception as ex:
+                except BaseException as ex:
                     print("Cannot parse configuration file. Falling back to previous settings.")

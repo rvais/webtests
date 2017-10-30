@@ -37,7 +37,7 @@ class ClickOnComponent(UserAction):
                 self.action_failure(msg="Component is not visible.")
                 return False
 
-        except Exception as ex:
+        except BaseException as ex:
             self.action_failure()
             return False
 
@@ -73,7 +73,7 @@ class ClickOnLink(UserAction):
                 self.action_failure(msg="Element is not visible.")
                 return False
 
-        except Exception as ex:
+        except BaseException as ex:
             self.action_failure(ex)
             return False
 
@@ -97,7 +97,7 @@ class ClickOnLinkFirstVisible(ClickOnLink):
                 self.action_failure(msg="Element is not visible.")
                 return False
 
-        except Exception as ex:
+        except BaseException as ex:
             self.action_failure(ex)
             return False
 
@@ -133,6 +133,6 @@ class ClickOnElement(UserAction):
                 self.action_failure(msg="Element is not visible.")
                 return False
 
-        except Exception as ex:
+        except BaseException as ex:
             self.action_failure(ex)
             return False

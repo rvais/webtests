@@ -244,7 +244,7 @@ class FindComponent(UserAction):
             self._logger.info("Searching for component '{}'.".format(component.name))
             return component
 
-        except Exception as ex:
+        except BaseException as ex:
             self.action_failure()
             return None
 
@@ -268,7 +268,7 @@ class FindLink(UserAction):
             self._logger.info("Searching for link with text '{}'.".format(self._link_text))
             return link
 
-        except Exception as ex:
+        except BaseException as ex:
             self.action_failure(ex)
             return None
 
@@ -295,7 +295,7 @@ class FindElement(UserAction):
                 page, self._selector, self._selector_value, self._component, self._subcomponents)
             return element
 
-        except Exception as ex:
+        except BaseException as ex:
             self.action_failure(ex)
             return None
 

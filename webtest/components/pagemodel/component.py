@@ -74,7 +74,7 @@ class Component(object):
             self._root = root
             self._node = self._root.get_element(self._root, self._stype, self._svalue)
 
-        except Exception as ex:
+        except BaseException as ex:
             self._logger.error("Setting new root node for component '{}' was not successful"
                                " and may cause trouble in following code.".format(self.name))
             self._logger.error(ex.args)

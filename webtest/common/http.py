@@ -47,7 +47,7 @@ def cut_host_from_url(full_url: str) -> str:
     try:
         index = full_url.index("/", index)
         full_url = full_url[index:]
-    except Exception as ex:
+    except BaseException as ex:
         pass
 
     return full_url

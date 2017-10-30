@@ -34,7 +34,7 @@ class Inspect(UserAction):
         exception = None
         try:
             check = self._expected == self._inspect(agent)
-        except Exception as ex:
+        except BaseException as ex:
             exception = ex
             check = False
 

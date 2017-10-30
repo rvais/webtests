@@ -72,7 +72,7 @@ class Wait(object) :
                 logger.debug("Unsuccessful attempt {} to gain result. Waiting another period ...".format(counter))
                 sleep(self._config.polling_period)
 
-            except Exception as ex:
+            except BaseException as ex:
                 raise ex
 
     @staticmethod

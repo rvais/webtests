@@ -142,7 +142,7 @@ class Page(object):
 
                 success = True
 
-            except Exception as ex:
+            except BaseException as ex:
                 self._logger.warning("Unsuccessful attempt to construct the page representation.")
                 self._logger.warning(ex)
                 sleep(wait_on_failure)

@@ -33,7 +33,7 @@ class FillForm(UserAction):
             self._logger.info("Filling form (component '{}').".format(component.name))
             return component.fill(self._data_dictionary)
 
-        except Exception as ex:
+        except BaseException as ex:
             self.action_failure(ex)
             return False
 
@@ -67,7 +67,7 @@ class FillSpecificInputField(UserAction):
                 else:
                     return node.fill_input(node, [self._input_type, self._value, None])
 
-            except Exception as ex:
+            except BaseException as ex:
                 self.action_failure(ex)
                 return False
 
@@ -124,6 +124,6 @@ class FillSpecificElement(UserAction):
                     node = node.get_element_by_xpath("//*/{}{}".format(self._tag, selector))
                     return node.fill(self._value)
 
-            except Exception as ex:
+            except BaseException as ex:
                 self.action_failure(ex)
                 return False
