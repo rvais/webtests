@@ -86,7 +86,6 @@ class Configurator(object):
                     'driver_bin_path' : 'chromedriver',
                     'logging_level' : 'DEFAULT',
                     'log_to_console' : True,
-                    'log_to_file' : True,
                     'debug_enabled' : True,
                     'trace_enabled' : True,
                     'scenarios_path' : './tests/scenarios/',
