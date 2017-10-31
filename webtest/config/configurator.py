@@ -3,6 +3,7 @@
 # Framework for testing web applications - proof of concept
 # Authors:  Roman Vais <rvais@redhat.com>
 #
+from logging import warning
 
 import os  # environment variables of the shell/machine
 
@@ -100,29 +101,25 @@ class Configurator(object):
                 'driver_bin_path' : 'DRIVER_BIN_PATH',
             }
 
-            print("Inicializing configuration ...")
+            # print("Inicializing configuration ...")
             self.additional = dict()
             self.cfg = ConfigParser(empty_lines_in_values=False)
             self.cfg.optionxform = str
             self.cfg.read_dict(defaults)
             if os.path.exists(config_file) and os.path.isfile(config_file):
-                print("Configuration file '{}' does exist.".format(config_file))
                 try:
                     self.cfg.read_file(open(config_file))
                 except BaseException as ex:
-                    print("Cannot parse configuration file. Falling back to default settings.")
+                    warning("Cannot parse configuration file. Falling back to default settings.", ex)
 
             else:
-                print("Configuration file does not exist, falling back to default settings.")
-                print("Storing configuration to given file.")
-                with open(config_file,'w') as file:
-                    self.cfg.write(file)
+                warning("Configuration file '{}' does not exist.".format(config_file))
 
             for option, variable in environmental_variables.items():
                 if variable in os.environ.keys():
                     value = os.environ[variable]
                     # self._logger.debug("Environment variable '{}' has been set to value '{}'.".format(variable, value))
-                    print("Environment variable '{}' has been set to value '{}'.".format(variable, value))
+                    # print("Environment variable '{}' has been set to value '{}'.".format(variable, value))
                     self.cfg.set(_section_name, option, value)
                     if self.cfg.get(_section_name, option, raw=True) != value:
                         raise Exception("Attempt to set new value was not successful.")
@@ -161,8 +158,10 @@ class Configurator(object):
 
         def update_from_file(self, config_file:str):
             if os.path.exists(config_file) and os.path.isfile(config_file):
-                print("Configuration file '{}' does exist.".format(config_file))
                 try:
                     self.cfg.read_file(open(config_file))
                 except BaseException as ex:
-                    print("Cannot parse configuration file. Falling back to previous settings.")
+                    warning("Cannot parse configuration file. Falling back to previous settings.", ex)
+
+            else:
+                warning("Configuration file '{}' does not exist.".format(config_file))
