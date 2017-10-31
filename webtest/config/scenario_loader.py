@@ -4,7 +4,6 @@
 # Authors:  Roman Vais <rvais@redhat.com>
 #
 
-import inspect
 import os
 
 
@@ -45,7 +44,7 @@ class ScenarioLoader(object):
                 continue
 
             name = module_name
-            package_name = os.path.basename(loader.path)
+            package_name = parent if parent is not None and parent != "" else os.path.basename(loader.path)
 
             # following code get name of scenario instead of name of file without actually loading
             # and executing its python code
@@ -75,8 +74,8 @@ class ScenarioLoader(object):
     class __ScenarioLoaderImpl(object):
         def __init__(self, *arg, **kwords):
             self._scenarios = dict()
-            # TODO: comment following print out, when verified this works as intended
-            print("Scenario loader instance created.")
+            # Logger is not yet available, because this code loads before it can be properly configured
+            # print("Scenario loader instance created.")
 
         def load_scenario(self, group_name: str, scenario_name: str) -> tuple or None:
             if group_name not in self._scenarios.keys():
@@ -97,5 +96,5 @@ class ScenarioLoader(object):
             group = self._scenarios[group_name]
             group[scenario_name] = (importer, module_name)
 
-            # TODO: comment following print out, when verified this works as intended
-            print("Scenario added to loader.")
+            # Logger is not yet available, because this code loads before it can be properly configured
+            # print("Scenario added to loader.")
