@@ -4,6 +4,7 @@
 # Authors:  Roman Vais <rvais@redhat.com>
 #
 
+import os
 from argparse import ArgumentParser as AP
 from webtest.webagent import WebAgent
 
@@ -54,7 +55,7 @@ class ArgumentParser(object):
             'nargs' : '?',
             'help'  : 'Path to configuration fail containing presets for this test-suit.',
         }
-        self._delegate.add_argument('--config-file', '-g', **kwargs)
+        self._delegate.add_argument('--config-file', '-c', **kwargs)
 
         # logging level
         choices = ['CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG', 'TRACE', 'DUMP', 'NOTSET', 'DEFAULT']
@@ -111,15 +112,18 @@ class ArgumentParser(object):
         }
         self._delegate.add_argument('--scenarios-path', **kwargs)
 
-        # scenario class
+        # scenario group
+        if not os.path.isabs(default_path):
+            default_path = os.path.abspath(default_path)
+        default_group = os.path.basename(default_path)
         kwargs = {
             'action'   : 'store',
             'nargs'    : '?',
-            'help'     : 'Name of scenario class (i.e. subset, subdir) that will be used '
+            'help'     : 'Name of scenario group (i.e. subset, subdir) that will be used '
                          'to search individual scenarios.',
-            'required' : True,
+            'default' : default_group,
         }
-        self._delegate.add_argument('--scenarios-class', '-c', **kwargs)
+        self._delegate.add_argument('--scenarios-group', '-g', **kwargs)
 
         # scenario name
         kwargs = {
