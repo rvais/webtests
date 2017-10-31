@@ -23,3 +23,15 @@ class FailAction(UserAction):
         self.action_failure(msg="Successfully failed!")
         return False
 
+class FailScenario(UserAction):
+    def __init__(self,scenario_name: str="None", *args, **kwargs):
+        super(FailScenario, self).__init__(*args, **kwargs)
+        self._scenario_name = scenario_name
+        self._redirection = False
+        self._change = False
+        self._delay_for_user = 0
+
+    def perform_self(self, agent: 'WebAgent') -> bool:
+        self._logger.info("Scenario '{}' has no steps to perform!".format(self._scenario_name))
+        self.action_failure(msg="Scenario '{}' has not been found!".format(self._scenario_name))
+        return False

@@ -12,6 +12,7 @@ from webtest.config.configurator import Configurator
 from webtest.webagent import WebAgent
 from webtest.tests.commons import Performer
 from webtest.common.logging.logger import get_logger
+from webtest.actions.common.fail import FailScenario
 
 # main ________________________________________________________________________
 def main(args=sys.argv[1:]) -> int:
@@ -52,6 +53,8 @@ def main(args=sys.argv[1:]) -> int:
 
         success = False
         logger.info("Scenario '{}' not found in a group '{}' .".format(scenario_name, group))
+        scenario = (scenario_name, list(), [FailScenario(scenario_name), ])
+        scenarios.append(scenario)
 
 
     performer = Performer()
