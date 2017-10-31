@@ -23,7 +23,7 @@ def main(args=sys.argv[1:]) -> int:
 
     cfg = Configurator(args["config_file"])
     cfg.set_multiple_options(args)
-    # cfg.save_as("./webtest.cfg")
+    # cfg.save_as("./webtest.cfg.new")
 
     # get logger but after logging was configured
     logger = get_logger("Main")
@@ -38,7 +38,7 @@ def main(args=sys.argv[1:]) -> int:
 
     scenarios = list()
 
-    group = cfg.get_option("scenarios_class")
+    group = cfg.get_option("scenarios_group")
     name_list = cfg.get_option("execute_scenarios")
     if name_list is None:
         name_list = list()
@@ -51,7 +51,7 @@ def main(args=sys.argv[1:]) -> int:
             continue
 
         success = False
-        logger.info("Scenario '{}' not found.".format(scenario_name))
+        logger.info("Scenario '{}' not found in a group '{}' .".format(scenario_name, group))
 
 
     performer = Performer()
