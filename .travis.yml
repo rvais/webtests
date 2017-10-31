@@ -39,7 +39,8 @@ before_script:
   - export BROWSER_BIN_PATH=`readlink -f $(which google-chrome)`
   - export DRIVER_BIN_PATH=`readlink -f $(which chromedriver)`
   - export PYTHONPATH="${PWD%/}${PYTHONPATH:+:}${PYTHONPATH:-}"
+  - cd webtest
 
 script:
-  -  python webtest/webagent.py
+  -  python runner.py -b chrome -g "examples" -e "Google Search" -c ./webtest.cfg -l TRACE
  
