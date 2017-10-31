@@ -17,7 +17,6 @@ class Configurator(object):
 
     def __init__(self, config_file: str=None, *arg, **kwords):
 
-
         if Configurator._instance is None:
             cf = config_file
             if cf is None:
@@ -28,6 +27,7 @@ class Configurator(object):
         self._delegate = Configurator._instance
         if config_file is not None:
             self._delegate.update_from_file(config_file)
+            self._delegate.update_from_environment()
 
     def get_option(self, name: str):
         return Configurator.process_value(self._delegate.get_option(name))
@@ -44,6 +44,12 @@ class Configurator(object):
 
     def save_as(self, file_name: str):
         self._delegate.save_as(file_name)
+
+    def update_from_file(self, config_file: str):
+        self._delegate.update_from_file(config_file)
+
+    def update_from_environment(self):
+        self._delegate.update_from_environment()
 
     @staticmethod
     def process_value(option: str) -> str or int or bool:
@@ -79,8 +85,9 @@ class Configurator(object):
 
 
     class __ConfiguratorImpl(object):
+
         def __init__(self, config_file, *arg, **kwords):
-            defaults = {
+            self.defaults = {
                 _section_name : {
                     'browser' : 'chrome',
                     'browser_bin_path' : 'google-chrome',
@@ -95,34 +102,19 @@ class Configurator(object):
                     'attempt_max_count' : 3,
                 }
             }
-
-            environmental_variables = {
-                'browser_bin_path' : 'BROWSER_BIN_PATH',
-                'driver_bin_path' : 'DRIVER_BIN_PATH',
+            self.environmental_variables = {
+                'browser_bin_path': 'BROWSER_BIN_PATH',
+                'driver_bin_path': 'DRIVER_BIN_PATH',
             }
+
 
             # print("Inicializing configuration ...")
             self.additional = dict()
             self.cfg = ConfigParser(empty_lines_in_values=False)
             self.cfg.optionxform = str
-            self.cfg.read_dict(defaults)
-            if os.path.exists(config_file) and os.path.isfile(config_file):
-                try:
-                    self.cfg.read_file(open(config_file))
-                except BaseException as ex:
-                    warning("Cannot parse configuration file. Falling back to default settings.", ex)
-
-            else:
-                warning("Configuration file '{}' does not exist.".format(config_file))
-
-            for option, variable in environmental_variables.items():
-                if variable in os.environ.keys():
-                    value = os.environ[variable]
-                    # self._logger.debug("Environment variable '{}' has been set to value '{}'.".format(variable, value))
-                    # print("Environment variable '{}' has been set to value '{}'.".format(variable, value))
-                    self.cfg.set(_section_name, option, value)
-                    if self.cfg.get(_section_name, option, raw=True) != value:
-                        raise Exception("Attempt to set new value was not successful.")
+            self.cfg.read_dict(self.defaults)
+            self.update_from_file(config_file)
+            self.update_from_environment()
 
         def get_option(self, name:str, section: str=_section_name) -> str or None:
             if self.cfg.has_option(section, name):
@@ -165,3 +157,14 @@ class Configurator(object):
 
             else:
                 warning("Configuration file '{}' does not exist.".format(config_file))
+
+        def update_from_environment(self):
+            # environmental variables take higher priority
+            for option, variable in self.environmental_variables.items():
+                if variable in os.environ.keys():
+                    value = os.environ[variable]
+                    # self._logger.debug("Environment variable '{}' has been set to value '{}'.".format(variable, value))
+                    # print("Environment variable '{}' has been set to value '{}'.".format(variable, value))
+                    self.cfg.set(_section_name, option, value)
+                    if self.cfg.get(_section_name, option, raw=True) != value:
+                        raise Exception("Attempt to set new value was not successful.")
