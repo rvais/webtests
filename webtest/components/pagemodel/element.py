@@ -517,6 +517,7 @@ class Element(object):
                 return self.click()
 
         elif input_type in Element._input_text_types:
+            self.clear(self)
             self.type_in(self, str(value))
 
         else:
@@ -536,6 +537,7 @@ class Element(object):
             self._logger.trace("Element '{}' is not visible.".format(self))
             return False
 
+        self.clear(self)
         element_select = Select(self._elem)
         for opt in options:
             element_select.select_by_visible_text(opt)
@@ -551,6 +553,7 @@ class Element(object):
             self._logger.trace("Element '{}' is not visible.".format(self))
             return False
 
+        self.clear(self)
         if not isinstance(data,str):
             text = "\n".join(list(data))
         else:
