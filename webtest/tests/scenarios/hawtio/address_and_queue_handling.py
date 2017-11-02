@@ -9,6 +9,7 @@ from webtest.components.models.hawtio.login_page import HawtioLoginPageNS
 from webtest.components.models.hawtio.welcome_page import HawtioWelcomePage
 from webtest.components.models.hawtio.attributes_page import HawtioAttributesPage
 from webtest.components.models.hawtio.create_address_page import HawtioCreateAddressPage
+from webtest.components.models.hawtio.create_queue_page import HawtioQueueCreatePage
 
 # import user actions to be used as steps here:
 from webtest.actions.common.open_browser import OpenBrowser
@@ -25,7 +26,7 @@ from webtest.common.selector import Selector
 
 
 # config section (e.g. set host name and port for all templates)_______________
-scenario_name = "Address&Queue - Create&Delete"
+scenario_name = "Address&Queue - Create"
 
 template_hostname = "rhel7"
 template_port = 8161
@@ -41,6 +42,7 @@ models = [
     HawtioWelcomePage(host=template_hostname, port=template_port),
     HawtioAttributesPage(host=template_hostname, port=template_port),
     HawtioCreateAddressPage(host=template_hostname, port=template_port),
+    HawtioQueueCreatePage(host=template_hostname, port=template_port),
 ]
 
 
@@ -57,6 +59,14 @@ address = {
     'routing-type': ['Anycast', ],
 }
 
+queue = {
+    'queue-name-input': ('text', 'pokus-queue'),
+    'routing-type-select': ['Anycast', ],
+    'durable-checkbox': ('checkbox', True),
+    'filter-input': ('text', 'filter'),
+    'max-consumers-input': ('number', 20),
+    'purge-checkbox': ('checkbox', False),
+}
 
 
 # steps sections (here are defined individual scenario steps)__________________
@@ -80,7 +90,23 @@ steps = [
     ClickOnComponent('main', 'right-column', 'navigation-tabs', 'navigation-tabs-drop-down', delay=5),
     ClickOnLink('Create', 'main', 'right-column', 'navigation-tabs', page_change=True),
     FillForm(address, 'main', 'right-column', 'form'),
-    ClickOnComponent('main', 'right-column', 'form', 'submit'),
+    ClickOnComponent('main', 'right-column', 'form', 'submit', page_change=True),
+    ClickOnElement(Selector.XPATH, '//*/button', 'body', 'toast', delay=8), # close the "success" bubble, doesn't seem to be working
+
+    # force tree menu to refresh
+    ClickOnComponent('main', 'left-column', 'collapse-tree'),
+    ClickOnComponent('main', 'left-column', 'expand-tree'),
+
+    # check that address has been created by it's existence in tree menu
+    LinkExists(address['address-name'][1], 'main', 'left-column', 'tree-menu'),
+
+    # create queue
+    ClickOnLinkFirstVisible(address['address-name'][1], 'main', 'left-column', 'tree-menu', redirection=False, delay=3),
+    ClickOnLink('Attributes', 'main', 'right-column', 'navigation-tabs', page_change=True),
+    ClickOnComponent('main', 'right-column', 'navigation-tabs', 'navigation-tabs-drop-down', delay=5),
+    ClickOnLink('Create', 'main', 'right-column', 'navigation-tabs', page_change=True),
+    FillForm(queue, 'main', 'right-column', 'form'),
+    ClickOnComponent('main', 'right-column', 'form', 'submit', page_change=True),
     ClickOnElement(Selector.XPATH, '//*/button', 'body', 'toast', delay=8), # close the "success" bubble, doesn't seem to be working
 
     # force tree menu to refresh
@@ -88,10 +114,8 @@ steps = [
     ClickOnComponent('main', 'left-column', 'expand-tree'),
 
     # check that queue has been created by it's existence in tree menu
-    LinkExists(address['address-name'][1], 'main', 'left-column', 'tree-menu'),
-    ClickOnLinkFirstVisible(address['address-name'][1], 'main', 'left-column', 'tree-menu', redirection=False, delay=10),
-
-    # TODO: add steps related to the creation of queue, and removing both queue and address
+    LinkExists(queue['queue-name-input'][1], 'main', 'left-column', 'tree-menu'),
+    ClickOnLinkFirstVisible(queue['queue-name-input'][1], 'main', 'left-column', 'tree-menu', redirection=False, delay=3),
 
     # logout from hawtio
     ClickOnLink('admin', 'body', 'header', 'header-panel', redirection=False, page_change=False),
