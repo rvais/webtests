@@ -50,7 +50,7 @@ class Inspect(UserAction):
 
 
     def _inspect(self, agent: 'WebAgent') -> object:
-        raise Exception("This is abstract class, subclass has to redefine _inspect() method.")
+        raise BaseException("This is abstract class, subclass has to redefine _inspect() method.")
 
 
 #

@@ -97,7 +97,7 @@ class Browser(object):
         return False
 
     def start_webdriver(self):
-        raise Exception('Browser is "abstract" class and method'
+        raise BaseException('Browser is "abstract" class and method'
             ' "start_webdriver()" needs to be implemented in subclasses.')
 
     def quit(self):

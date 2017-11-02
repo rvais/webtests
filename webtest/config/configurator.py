@@ -139,7 +139,7 @@ class Configurator(object):
 
             self.cfg.set(_section_name, name, value)
             if self.cfg.get(_section_name, name, raw=True) != value:
-                raise Exception("Attempt to set new value was not successful.")
+                raise BaseException("Attempt to set new value was not successful.")
 
             return
 
