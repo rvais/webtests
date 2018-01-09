@@ -3,7 +3,7 @@
 # Framework for testing web applications - proof of concept
 # Authors:  Roman Vais <rvais@redhat.com>
 #
-
+from selenium.common.exceptions import InvalidElementStateException
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.select import Select
 
@@ -49,6 +49,12 @@ class Element(object):
     def __ne__(self, element):
         return not self.__eq__(element)
 
+    def __str__(self):
+        try:
+            return "'<{}> element'".format(self._tag_name)
+        except BaseException as ex:
+            return super(Element, self).__str__()
+
     # property and attribute getters __________________________________________
     # stable properties
     def _get_stable_properties(self):
@@ -57,6 +63,9 @@ class Element(object):
         self._tag_name = self.get_tag_name(self, True)
         self._size = self.get_size(self, True)
         self._text_node = self.get_text(self, True)
+        self._input_type = None
+        if isinstance(self._tag_name, str) and self._tag_name.lower()  == "input":
+            self._input_type = self.get_attribute(self, "type")
 
         return
 
@@ -407,9 +416,13 @@ class Element(object):
 
     @Wait
     def clear(self) -> bool:
-        self._logger.trace("Trying to 'perform' clear on element '{}'.".format(self))
+        self._logger.trace("Trying to perform clear on element '{}'.".format(self.__str__()))
         if self.visible:
-            return self._elem.clear()
+            try:
+                return self._elem.clear()
+            except InvalidElementStateException as ex:
+                self._logger.exception("Couldn't perform 'clear' action on '{}' element {}.\n\texception: "
+                                       .format(self._tag_name, self, ex.__str__()))
 
         self._logger.trace("Element '{}' is not visible.".format(self))
         return False
@@ -514,7 +527,7 @@ class Element(object):
 
         if isinstance(value, bool) and input_type in Element._input_boolean_types:
             if self.selected != value:
-                return self.click()
+                return self.click(self)
 
         elif input_type in Element._input_text_types:
             self.clear(self)
