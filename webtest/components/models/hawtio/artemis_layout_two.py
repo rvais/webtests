@@ -10,7 +10,7 @@ from webtest.common.http import Constants
 
 
 class HawtioArtemisLayoutTwoPage(PageModel):
-    def __init__(self, protocol=Constants.PROTOCOL_HTTP, host="rhel7", port=8161, uri="hawtio/artemis", *args, **kw):
+    def __init__(self, protocol=Constants.PROTOCOL_HTTP, host="rhel7", port=8161, uri="console/artemis", *args, **kw):
         super(HawtioArtemisLayoutTwoPage, self).__init__(protocol, host, port, uri, *args, **kw)
 
     def _create_template(self):

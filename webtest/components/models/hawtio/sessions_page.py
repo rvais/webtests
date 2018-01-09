@@ -10,7 +10,7 @@ from webtest.common.selector import Selector
 
 
 class HawtioSessionsPage(HawtioArtemisLayoutTwoPage):
-    def __init__(self, protocol=Constants.PROTOCOL_HTTP, host="rhel7", port=8161, uri="hawtio/artemis/sessions", *args, **kw):
+    def __init__(self, protocol=Constants.PROTOCOL_HTTP, host="rhel7", port=8161, uri="console/artemis/sessions", *args, **kw):
         super(HawtioSessionsPage, self).__init__(protocol, host, port, uri, *args, **kw)
 
     def _create_template(self):

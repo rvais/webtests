@@ -10,7 +10,7 @@ from webtest.common.http import Constants
 
 
 class HawtioAttributesPage(HawtioArtemisLayoutOnePage):
-    def __init__(self, protocol=Constants.PROTOCOL_HTTP, host="rhel7", port=8161, uri="hawtio/jmx/attributes", *args, **kw):
+    def __init__(self, protocol=Constants.PROTOCOL_HTTP, host="rhel7", port=8161, uri="console/jmx/attributes", *args, **kw):
         super(HawtioAttributesPage, self).__init__(protocol, host, port, uri, *args, **kw)
 
     def _create_template(self):

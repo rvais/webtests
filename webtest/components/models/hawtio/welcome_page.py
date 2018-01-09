@@ -10,7 +10,7 @@ from webtest.common.http import Constants
 
 
 class HawtioWelcomePage(PageModel):
-    def __init__(self, protocol=Constants.PROTOCOL_HTTP, host="rhel7", port=8161, uri="hawtio/welcome", *arg, **kw):
+    def __init__(self, protocol=Constants.PROTOCOL_HTTP, host="rhel7", port=8161, uri="console/welcome", *arg, **kw):
         super(HawtioWelcomePage, self).__init__(protocol, host, port, uri, *arg, **kw)
 
     def _create_template(self):

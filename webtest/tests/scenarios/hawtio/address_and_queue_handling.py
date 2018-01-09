@@ -38,7 +38,7 @@ login_page = HawtioLoginPageNS(host=template_hostname, port=template_port)
 
 models = [
     login_page,
-    login_page.derive_template(name="HawtioAlternativeLogin", uri="hawtio/login"),
+    login_page.derive_template(name="HawtioAlternativeLogin", uri="console/login"),
     HawtioWelcomePage(host=template_hostname, port=template_port),
     HawtioAttributesPage(host=template_hostname, port=template_port),
     HawtioCreateAddressPage(host=template_hostname, port=template_port),
