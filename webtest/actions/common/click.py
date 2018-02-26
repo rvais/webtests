@@ -34,11 +34,11 @@ class ClickOnComponent(UserAction):
                 self._logger.info("Clicking on component '{}'.".format(component.name))
                 return component.click()
             else:
-                self.action_failure(msg="Component is not visible.")
+                self._action_failure(msg="Component is not visible.")
                 return False
 
         except BaseException as ex:
-            self.action_failure()
+            self._action_failure()
             return False
 
 
@@ -70,11 +70,11 @@ class ClickOnLink(UserAction):
                 self._logger.info("Clicking on link with text '{}'.".format(self._link_text))
                 return link.click(link)
             else:
-                self.action_failure(msg="Element is not visible.")
+                self._action_failure(msg="Element is not visible.")
                 return False
 
         except BaseException as ex:
-            self.action_failure(ex)
+            self._action_failure(ex)
             return False
 
 #
@@ -94,11 +94,11 @@ class ClickOnLinkFirstVisible(ClickOnLink):
                 self._logger.info("Clicking on link with text '{}'.".format(self._link_text))
                 return link.click(link)
             else:
-                self.action_failure(msg="Element is not visible.")
+                self._action_failure(msg="Element is not visible.")
                 return False
 
         except BaseException as ex:
-            self.action_failure(ex)
+            self._action_failure(ex)
             return False
 
 
@@ -130,9 +130,9 @@ class ClickOnElement(UserAction):
                                   "with value '{}' .".format(self._selector, self._selector_value))
                 return element.click(element)
             else:
-                self.action_failure(msg="Element is not visible.")
+                self._action_failure(msg="Element is not visible.")
                 return False
 
         except BaseException as ex:
-            self.action_failure(ex)
+            self._action_failure(ex)
             return False

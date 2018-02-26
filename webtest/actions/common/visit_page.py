@@ -26,13 +26,13 @@ class VisitPageByName(VisitPage):
     def perform_self(self, agent: 'WebAgent') -> bool:
         self._logger.info("Accessing page by template named '{}'.".format(self._page_name))
         if not agent.is_browser_running():
-            self.action_failure()
+            self._action_failure()
 
         page = agent.get_page(name=self._page_name)
         if page is not None:
             return True
         else:
-            self.action_failure()
+            self._action_failure()
             return False
 
 
@@ -50,13 +50,13 @@ class VisitPageByUrl(VisitPage):
         url = format_url(self._protocol, self._host, self._port, self._url)
         self._logger.info("Accessing page by url '{}'.".format(url))
         if not agent.is_browser_running():
-            self.action_failure()
+            self._action_failure()
 
         page = agent.get_page(full_url=url)
         if page is not None:
             return True
         else:
-            self.action_failure()
+            self._action_failure()
             return False
 
 
@@ -70,11 +70,11 @@ class VisitPageWithTemplate(VisitPage):
     def perform_self(self, agent: 'WebAgent') -> bool:
         self._logger.info("Accessing page by template named '{}'.".format(self._model.name))
         if not agent.is_browser_running():
-            self.action_failure()
+            self._action_failure()
 
         page = agent.get_page(page_model=self._model)
         if page is not None:
             return True
         else:
-            self.action_failure()
+            self._action_failure()
             return False

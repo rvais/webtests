@@ -41,7 +41,7 @@ class Inspect(UserAction):
         result = True
 
         if check != self._expected or exception is not None:
-            self.action_failure(ex=exception, msg=self._failure_msg)
+            self._action_failure(ex=exception, msg=self._failure_msg)
             self._logger.warning("expected = '{}'".format(self._expected))
             self._logger.warning("gained = '{}'".format(check))
             result = False

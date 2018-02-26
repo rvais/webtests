@@ -81,7 +81,7 @@ class UserAction(object):
     #           probable cause.
     # @return None
     #
-    def action_failure(self, ex: Exception = None, msg: str = None):
+    def _action_failure(self, ex: Exception = None, msg: str = None):
         self._logger.info("Action '{}' FAILED.".format(self._class_name))
         if msg is not None:
             self._logger.info(msg)
@@ -288,7 +288,7 @@ class FindComponent(UserAction):
             return component
 
         except BaseException as ex:
-            self.action_failure()
+            self._action_failure()
             return None
 
 
@@ -310,7 +310,7 @@ class FindLink(UserAction):
             return link
 
         except BaseException as ex:
-            self.action_failure(ex)
+            self._action_failure(ex)
             return None
 
 
@@ -336,7 +336,7 @@ class FindElement(UserAction):
             return element
 
         except BaseException as ex:
-            self.action_failure(ex)
+            self._action_failure(ex)
             return None
 
 # piece of code form debugging _get_link method, remove it is no longer needed

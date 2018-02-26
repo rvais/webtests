@@ -20,7 +20,7 @@ class FailAction(UserAction):
 
     def perform_self(self, agent: 'WebAgent') -> bool:
         self._logger.info("Trying to fail and trying hard!")
-        self.action_failure(msg="Successfully failed!")
+        self._action_failure(msg="Successfully failed!")
         return False
 
 class FailScenario(UserAction):
@@ -33,5 +33,5 @@ class FailScenario(UserAction):
 
     def perform_self(self, agent: 'WebAgent') -> bool:
         self._logger.info("Scenario '{}' has no steps to perform!".format(self._scenario_name))
-        self.action_failure(msg="Scenario '{}' has not been found!".format(self._scenario_name))
+        self._action_failure(msg="Scenario '{}' has not been found!".format(self._scenario_name))
         return False

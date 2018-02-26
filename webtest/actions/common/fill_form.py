@@ -34,7 +34,7 @@ class FillForm(UserAction):
             return component.fill(self._data_dictionary)
 
         except BaseException as ex:
-            self.action_failure(ex)
+            self._action_failure(ex)
             return False
 
 
@@ -68,7 +68,7 @@ class FillSpecificInputField(UserAction):
                     return node.fill_input(node, [self._input_type, self._value, None])
 
             except BaseException as ex:
-                self.action_failure(ex)
+                self._action_failure(ex)
                 return False
 
 
@@ -107,7 +107,7 @@ class FillSpecificElement(UserAction):
                             success = False
 
                     if not success:
-                        self.action_failure(msg="Element found does not have all required attributes or some of the values are different.")
+                        self._action_failure(msg="Element found does not have all required attributes or some of the values are different.")
                         return success
 
                     return node.fill(self._value)
@@ -125,5 +125,5 @@ class FillSpecificElement(UserAction):
                     return node.fill(self._value)
 
             except BaseException as ex:
-                self.action_failure(ex)
+                self._action_failure(ex)
                 return False
