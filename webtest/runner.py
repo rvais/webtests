@@ -3,6 +3,7 @@
 # Framework for testing web applications - proof of concept
 # Authors:  Roman Vais <rvais@redhat.com>
 #
+
 import sys
 import os
 
@@ -13,6 +14,7 @@ from webtest.webagent import WebAgent
 from webtest.tests.commons import Performer
 from webtest.common.logging.logger import get_logger
 from webtest.actions.common.fail import FailScenario
+
 
 # main ________________________________________________________________________
 def main(args=sys.argv[1:]) -> int:
@@ -48,14 +50,13 @@ def main(args=sys.argv[1:]) -> int:
         scenario = loader.load_scenario(group, scenario_name)
         if scenario is not None:
             scenarios.append(scenario)
-            logger.info("Scenario '{}' successfully loaded.". format(scenario_name))
+            logger.info("Scenario '{}' successfully loaded.".format(scenario_name))
             continue
 
         success = False
         logger.info("Scenario '{}' not found in a group '{}' .".format(scenario_name, group))
         scenario = (scenario_name, list(), [FailScenario(scenario_name), ])
         scenarios.append(scenario)
-
 
     performer = Performer()
     agent = WebAgent()
@@ -67,6 +68,7 @@ def main(args=sys.argv[1:]) -> int:
         return 1
 
     return 0
+
 
 if __name__ == '__main__':
     exit(main())
