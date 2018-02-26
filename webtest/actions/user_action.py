@@ -15,6 +15,7 @@ from webtest.components.pagemodel.component import Component
 from webtest.components.pagemodel.element import Element
 from webtest.common.scripts.frameworks import angular_loaded, render_cycle
 
+
 #
 # UserAction class represents abstraction of each possible action that user
 # Can perform and by doing so interact with webpage in his browser. Class
@@ -35,15 +36,27 @@ class UserAction(object):
     #             in selenium might be done quicker that they take effect in browser or
     #             it is desired for user to se the effect of that action.
     #
-    def __init__(self, redirection: bool=False, page_change: bool=False, delay: int=0, stop_on_failure: bool=True):
+    def __init__(self, description: str or None = None, expected_result: str or None = None, redirection: bool = False,
+                 page_change: bool = False, delay: int = 0, stop_on_failure: bool = True):
         self._class_name = str(self.__class__.__name__)
-        self._logger = get_logger(self._class_name) # type: logging.Logger
+        self._logger = get_logger(self._class_name)  # type: logging.Logger
+
+        self._description = description
+        if not description:
+            self._description = "Perform generic user action."
+
+        self._expected = expected_result
+        if not expected_result:
+            self._expected = "No error should occur and no exceptions should be raised during execution."
 
         self._redirection = redirection
         self._change = page_change
         self._delay_for_user = delay
         self._stop_on_failure = stop_on_failure
 
+        self._success = None
+        self._ex = None
+        self._failure = "Action '{}' haven't been executed yet.".format(self._class_name)
 
     #
     # Method responsible for performing action it self and reporting success
@@ -55,8 +68,9 @@ class UserAction(object):
     # throw: might raise exception
     #
     def perform_self(self, agent: 'WebAgent') -> bool:
-        self._logger.info("Performing generic user action.")
-        return True
+        self._logger.info(self._description)
+        self._success = True
+        return self._success
 
     #
     # Method responsible for reporting failure and it's cause.
@@ -67,13 +81,44 @@ class UserAction(object):
     #           probable cause.
     # @return None
     #
-    def action_failure(self, ex: Exception=None, msg: str=None ):
+    def action_failure(self, ex: Exception = None, msg: str = None):
         self._logger.info("Action '{}' FAILED.".format(self._class_name))
         if msg is not None:
             self._logger.info(msg)
 
         if ex is not None:
             self._logger.warning(ex)
+
+    #
+    # Method responsible for reporting failure and it's cause.
+    # Should be used in perform_self() method's implementation.
+    #
+    # @param ex: instance of Exception that caused failure if any
+    # @param msg: text message describing or explaining failure and its
+    #           probable cause.
+    # @return None
+    #
+    def add_external_failure(self, ex: Exception = None, msg: str = None):
+        self._logger.info("Action '{}' FAILED.".format(self._class_name))
+        if msg is not None:
+            self._logger.info(msg)
+
+        if ex is not None:
+            self._logger.warning(ex)
+
+        self._success = False
+
+    def get_exception(self) -> BaseException:
+        return self._ex
+
+    def get_result(self) -> bool:
+        return self._success
+
+    def get_failure(self) -> str or None:
+        if not self._success:
+            return self._failure
+
+        return None
 
     #
     # Method returns information whether or not redirection is expected
@@ -146,7 +191,6 @@ class UserAction(object):
         sleep(2)
         page.execute_script(angular_loaded)
 
-
     #
     # Name of the Action, class name by default
     #
@@ -162,13 +206,13 @@ class UserAction(object):
     def stop_on_failure(self) -> bool:
         return self._stop_on_failure
 
-# Support and experimental methods/classes, not a part of public interface
+    # Support and experimental methods/classes, not a part of public interface
     @staticmethod
     def _get_component(page: Page, component: str, subcomponents: list) -> Component or None:
-        component = page.get_component(component) # type: Component
+        component = page.get_component(component)  # type: Component
 
         if len(subcomponents) > 0 and component is not None:
-            subcomponent = component # type: Component
+            subcomponent = component  # type: Component
             for component_name in subcomponents:
                 subcomponent = subcomponent.get_subcomponent(component_name)
                 if subcomponent is None:
@@ -183,8 +227,8 @@ class UserAction(object):
             page: Page,
             selector: str,
             value: str,
-            component: str=Page.ROOT_COMPONENT_NAME,
-            subcomponents: list=list()
+            component: str = Page.ROOT_COMPONENT_NAME,
+            subcomponents: list = list()
     ) -> Element or None:
         component = UserAction._get_component(page, component, subcomponents)
         if component is None:
@@ -197,8 +241,8 @@ class UserAction(object):
     def _get_link(
             page: Page,
             text: str,
-            component: str=Page.ROOT_COMPONENT_NAME,
-            subcomponents: list=list()
+            component: str = Page.ROOT_COMPONENT_NAME,
+            subcomponents: list = list()
     ) -> Element or None:
         component = UserAction._get_component(page, component, subcomponents)
         if component is None:
@@ -207,13 +251,12 @@ class UserAction(object):
         node = component.get_element_node()
         return node.get_link_by_partial_text(text)
 
-
     @staticmethod
     def _get_link_first_visible(
             page: Page,
             text: str,
-            component: str=Page.ROOT_COMPONENT_NAME,
-            subcomponents: list=list()
+            component: str = Page.ROOT_COMPONENT_NAME,
+            subcomponents: list = list()
     ) -> Element or None:
         component = UserAction._get_component(page, component, subcomponents)
         if component is None:
@@ -221,7 +264,7 @@ class UserAction(object):
 
         node = component.get_element_node()
         link_list = node.get_multiple_elements(node, Selector.XPATH, '//*/a[contains(text(), "{}")]'.format(text))
-        for link in link_list: # type: Element
+        for link in link_list:  # type: Element
             if link.visible:
                 return link
 
@@ -229,7 +272,7 @@ class UserAction(object):
 
 
 class FindComponent(UserAction):
-    def __init__(self, component_name: str=Page.ROOT_COMPONENT_NAME, *args):
+    def __init__(self, component_name: str = Page.ROOT_COMPONENT_NAME, *args):
         super(FindComponent, self).__init__()
 
         self._component = component_name
@@ -249,9 +292,8 @@ class FindComponent(UserAction):
             return None
 
 
-
 class FindLink(UserAction):
-    def __init__(self, link_text:str, component_name: str=Page.ROOT_COMPONENT_NAME, *args):
+    def __init__(self, link_text: str, component_name: str = Page.ROOT_COMPONENT_NAME, *args):
         super(FindLink, self).__init__()
 
         self._component = component_name
@@ -259,7 +301,6 @@ class FindLink(UserAction):
         self._link_text = link_text
         if len(args) > 0:
             self._subcomponents.extend(list(args))
-
 
     def perform_self(self, agent: 'WebAgent') -> Element or None:
         page = agent.get_current_page()  # type: Page
@@ -273,9 +314,8 @@ class FindLink(UserAction):
             return None
 
 
-
 class FindElement(UserAction):
-    def __init__(self, selector: str, value: str, component_name: str=Page.ROOT_COMPONENT_NAME, *args):
+    def __init__(self, selector: str, value: str, component_name: str = Page.ROOT_COMPONENT_NAME, *args):
         super(FindElement, self).__init__()
 
         self._component = component_name
