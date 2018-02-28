@@ -8,6 +8,8 @@ from webtest.components.pagemodel.mock_element import MockElement
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 
+
+# noinspection PyMissingConstructor
 class MockDriver(WebDriver):
 
     def __init__(self):
@@ -31,7 +33,7 @@ class MockDriver(WebDriver):
     def _wrap_value(self, value):
         return value
 
-    def create_web_element(self, element_id):
+    def create_web_element(self, element_id: str) -> MockElement:
         return MockElement("mockelement", element_id)
 
     def _unwrap_value(self, value):
@@ -51,50 +53,50 @@ class MockDriver(WebDriver):
         return self.create_web_element(id_)
 
     def find_elements_by_id(self, id_):
-        return self.create_web_element(id_).find_element_by_id(id_);
+        return self.create_web_element(id_).get_element_by_id(id_)
 
     def find_element_by_xpath(self, xpath):
-        return self._mockelem.find_element_by_xpath(xpath)
+        return self._mockelem.get_element_by_xpath(xpath)
 
 
     def find_elements_by_xpath(self, xpath):
-        return self._mockelem.find_elements_by_xpath(xpath)
+        return self._mockelem.get_elements_by_xpath(xpath)
 
     def find_element_by_link_text(self, link_text):
-        return self._mockelem.find_element_by_link_text(link_text)
+        return self._mockelem.get_link_by_text(link_text)
 
     def find_elements_by_link_text(self, text):
-        return self._mockelem.find_elements_by_link_text(text)
+        return self._mockelem.get_links_by_text(text)
 
     def find_element_by_partial_link_text(self, link_text):
-        return self._mockelem.find_elements_by_partial_link_text(link_text)
+        return self._mockelem.get_link_by_partial_text(link_text)
 
     def find_elements_by_partial_link_text(self, link_text):
-        return self._mockelem.find_elements_by_partial_link_text(link_text)
+        return self._mockelem.get_links_by_partial_text(link_text)
 
     def find_element_by_name(self, name):
-        return self._mockelem.find_element_by_name(name)
+        return self._mockelem.get_element_by_name_property(name)
 
     def find_elements_by_name(self, name):
-        return self._mockelem.find_elements_by_name(name)
+        return self._mockelem.get_elements_by_name_property(name)
 
     def find_element_by_tag_name(self, name):
-        return self._mockelem.find_element_by_tag_name(name)
+        return self._mockelem.get_element_by_tag_name(name)
 
     def find_elements_by_tag_name(self, name):
-        return self._mockelem.find_elements_by_tag_name(name)
+        return self._mockelem.get_elements_by_tag_name(name)
 
     def find_element_by_class_name(self, name):
-        return self._mockelem.find_element_by_class_name(name)
+        return self._mockelem.get_element_by_class_name(name)
 
     def find_elements_by_class_name(self, name):
-        return self._mockelem.find_elements_by_class_name(name)
+        return self._mockelem.get_elements_by_class_name(name)
 
     def find_element_by_css_selector(self, css_selector):
-        return self._mockelem.find_element_by_css_selector(css_selector)
+        return self._mockelem.get_element_by_css_selector(css_selector)
 
     def find_elements_by_css_selector(self, css_selector):
-        return self._mockelem.find_element_by_css_selector(css_selector)
+        return self._mockelem.get_element_by_css_selector(css_selector)
 
     @property
     def current_url(self):
@@ -110,17 +112,20 @@ class MockDriver(WebDriver):
     def quit(self):
         pass
 
+    # noinspection PyPropertyDefinition
     @property
     def current_window_handle(self):
-        None
+        return None
 
+    # noinspection PyPropertyDefinition
     @property
     def window_handles(self):
-        None
+        return None
 
     def maximize_window(self):
         pass
 
+    # noinspection PyPropertyDefinition
     @property
     def switch_to(self):
         pass
@@ -185,9 +190,10 @@ class MockDriver(WebDriver):
         l.append(self._mockelem)
         return l
 
+    # noinspection PyPropertyDefinition
     @property
     def desired_capabilities(self):
-        None
+        return None
 
     def get_screenshot_as_file(self, filename):
         return False
