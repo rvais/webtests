@@ -3,6 +3,8 @@
 # Framework for testing web applications - proof of concept
 # Authors:  Roman Vais <rvais@redhat.com>
 #
+
+from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import InvalidElementStateException
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.select import Select
@@ -73,11 +75,15 @@ class Element(object):
     def id(self) -> str:
         return self.get_id()
 
+    @property
+    def internal_id(self) -> str:
+        return self._elem.id
+
     @Wait
     def get_id(self, refresh: bool=False) -> str:
         if refresh:
             self._logger.trace("Refreshing value of 'id' property")
-            self._id = self._elem.id
+            self._id = self.get_attribute(self, "id")
 
         return self._id
 
