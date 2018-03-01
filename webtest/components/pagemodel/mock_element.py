@@ -27,7 +27,7 @@ class MockElement(Element):
 
     def __str__(self):
         pattern = '<{0} id="{1}" class="{2}" width="{4}" height="{5}">{3}<{0}/>\n'
-        return pattern.format(self._tag_name, self._id, self._classname, self._text_node, self._width, self.height)
+        return pattern.format(self._tag_name, self._id, self._classname, self._text_node, self._width, self._height)
 
     # property and attribute getters __________________________________________
     # stable properties
